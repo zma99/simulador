@@ -112,11 +112,16 @@ def cargar_archivo(nombre_fichero):
                              
     contenido_sin_titulo = lista_contenido[1:]
     
-    for i, proceso in enumerate(contenido_sin_titulo):
-        if contenido_sin_titulo[i][-1] > 250 or contenido_sin_titulo[i][-1] < 1 :
-            print("ERROR, el tamaño del proceso debe ser entre 1 y 250 ->", proceso)
-            error = True
-            break
+    for i, fila in enumerate(contenido_sin_titulo):
+        for j, columna in enumerate(fila):
+            if type(contenido_sin_titulo[i][j]) != int:
+                print("ERROR, la ID, TA, TI, y tamaño del proceso deben ser enteros")
+                error = True
+                break
+            if contenido_sin_titulo[i][-1] > 250 or contenido_sin_titulo[i][-1] < 1 :
+                print("ERROR, el tamaño del proceso debe ser entre 1 y 250 ->", fila)
+                error = True
+                break
 
     if error != True:
         presentar_datos(contenido[:-1])
