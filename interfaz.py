@@ -115,7 +115,7 @@ def cargar_archivo(nombre_fichero):
     for i, fila in enumerate(contenido_sin_titulo):
         for j, columna in enumerate(fila):
             if type(contenido_sin_titulo[i][j]) != int:
-                print("ERROR, la ID, TA, TI, y tamaño del proceso deben ser enteros")
+                print("ERROR, la ID, TA, TI, y tamaño del proceso deben ser enteros ->", fila)
                 error = True
                 break
             if contenido_sin_titulo[i][-1] > 250 or contenido_sin_titulo[i][-1] < 1 :
