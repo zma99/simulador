@@ -1,4 +1,5 @@
 import os
+import ast #sirve para convertir str a list
 from clases import Consola, Menu, Proceso, Tabla
 
 
@@ -10,6 +11,15 @@ def validar(opcion):
         cmd.limpiar()
         print('Ingresá un opción válida. Intenta de nuevo...\n')
         return False
+
+
+def entrada(texto):
+    while True:
+        try:
+            numero = int(input(texto))
+            return numero                # solo devuelve numeros enteros
+        except ValueError:
+            print('Por favor ingrese un numero entero')
 
 
 def carga_manual():
@@ -29,10 +39,18 @@ def carga_manual():
     while seguir:
         nuevo_proceso = Proceso()
         print('Nuevo proceso\n')
-        nuevo_proceso.id = input('ID: ')
-        nuevo_proceso.ta = input('Tiempo de arribo: ')
-        nuevo_proceso.ti = input('Tiempo de irrupción: ')
-        nuevo_proceso.tam = input('Tamaño (KB): ')
+
+        nuevo_proceso.id = entrada('ID: ')
+        nuevo_proceso.ta = entrada('Tiempo de arribo: ')
+        nuevo_proceso.ti = entrada('Tiempo de irrupción: ')
+        nuevo_proceso.tam = entrada('Tamaño (KB) entre 1 y 250: ')
+
+        while True:
+            if nuevo_proceso.tam > 250 or nuevo_proceso.tam < 1:
+                print("ERROR, el tamaño del proceso debe ser entre 1 y 250")
+                nuevo_proceso.tam = entrada('Tamaño (KB) entre 1 y 250: ')
+            else:
+                break
 
         print('\nSe agregó el proceso correctametne.\n')
 
@@ -76,8 +94,32 @@ def cargar_archivo(nombre_fichero):
     with open('procesos_precargados.txt', 'r') as fichero:
         # lectura del archivo como lista de strings quitando el salto de linea
         contenido = fichero.read().split('\n')
-        presentar_datos(contenido)
-        cmd.pausa()
+
+        # cmd.pausa()
+    
+    lista_contenido = []
+    error = False
+
+    for linea in contenido[:-1]: #la ultima linea es un '' por eso es hasta la anteultima
+        try:
+            a_lista = ast.literal_eval(linea) #convierte literal str to list
+        except ValueError:
+            print("Error: Debe introducir los procesos como se muestra en instrucciones.txt")
+            error = True
+            break
+        else:
+            lista_contenido.append(a_lista) 
+                             
+    contenido_sin_titulo = lista_contenido[1:]
+    
+    for i, proceso in enumerate(contenido_sin_titulo):
+        if contenido_sin_titulo[i][-1] > 250 or contenido_sin_titulo[i][-1] < 1 :
+            print("ERROR, el tamaño del proceso debe ser entre 1 y 250 ->", proceso)
+            error = True
+            break
+
+    if error != True:
+        presentar_datos(contenido[:-1])
 
     print(f'Cerrando fichero: "{nombre_fichero}"')
 
