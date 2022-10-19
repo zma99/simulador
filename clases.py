@@ -1,4 +1,6 @@
 import os
+import sys
+from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
 
@@ -24,16 +26,79 @@ class Consola():
     
 
 
-class Menu():
-    def __init__(self, mensaje, opciones):
-        self.mensaje = mensaje   
-        self.opciones = opciones # diccionario
+class Menu(): 
+    def __init__(self, opciones):
+        # opciones debe ser un diccionario
+        # opciones = { item : opción}
+        self.opciones = opciones
 
     def mostrar(self):
-        print(self.mensaje)
+        for item in self.opciones:
+            print(f'{item}) {self.opciones[item]}')
 
-        for clave in self.opciones:
-            print(f'{clave}) {self.opciones[clave][0]}')
+
+    def cargar_archivo(self, nombre_archivo):
+        datos_procesos = list()
+        lista_temp = list()
+        print(f'Abriendo fichero: "{nombre_archivo}"')
+        with open(nombre_archivo, 'r') as fichero:
+            # lectura del archivo como lista de strings quitando el salto de linea
+            contenido = fichero.read().split('\n') # lista de string
+
+        for elemento in contenido:
+            lista_temp.append(elemento.strip('[]').split(','))
+        
+            
+        for i in range(0, len(lista_temp)):
+            elem_formateados = list()
+            elem = lista_temp[i]
+            for j in range(0, len(elem)):
+                temp = elem[j]
+                if temp.isdigit():
+                    elem_formateados.append(int(temp))
+                else:
+                    try:
+                        float(temp)
+                        print('No se permiten números flotantes en los datos de los procesos.')
+                        print('Verifique los datos en el archivo, deben respetar el formato establecido en la documentación.')
+                        print('Una vez corrija el(los) error(es), vualva a ejecutar el programa.')
+                        return exit()
+                    except ValueError:
+                        elem_formateados.append(temp)
+
+            datos_procesos.append(elem_formateados)
+
+        return datos_procesos
+
+    def capturar(self):
+        while True:
+            try:
+                opc = int(input('\n> '))
+                if opc == 1:
+                    pass
+                elif opc == 2:
+                    return self.cargar_archivo('procesos_precargados.txt')
+                elif opc == 3:
+                    encabezados = ['Autor', 'Rol']
+                    autores = [
+                        ['MASS Matias', ''],
+                        ['ROMERO Sebastián',''],
+                        ['SCHEFER Mauricio',''],
+                        ['ZANAZZO M. Alan','']
+                    ]
+                    info = Tabla('', encabezados, autores)
+                    print('Simulador de planificación de CPU y asignación de memoria')
+                    print('Versión 1.0')
+                    print('Sistemas Operativos')
+                    print('Ingeniería en Sistemas de Información')
+                    print('Universidad Tecnológica Nacional - Facultad Regional Resistencia')
+                    info.construir()
+                    return exit()
+                else:
+                    pass
+            except ValueError:
+                print('Debe ingresar una opción válida. Verifica que sea un número entero.')
+
 
 
 class Tabla():
@@ -56,8 +121,98 @@ class Proceso():
         self.tam = tam
 
 
+class Memoria():
+    def __init__(self, particiones):
+        # 'particiones se pasa como lista, la cantidad de elementos es igual a cantidad de particiones
+        # 'particiones' tiene el formato: [TAM_SO, TAM_PART_1, TAM_PART_2, ... TAM_PART_N]
+        # al inicializar el atributo 'particiones' se modificará y luego contiene lista de instancias de clase Particion
+
+        
+        # validación
+        for i in range(len(particiones)):
+            if type(particiones[i]) != int:
+                ventana_memo.limpiar()
+                print('Los datos ingresados para crear particiones no son válidos. Sólo se permiten números enteros.')
+                print(f'Error en el elemento: <{i}> {type(particiones[i])}')
+                print('Corrija los errores y vuelva a ejecutar el programa.')
+                sys.exit()
+        
+        # creando particiones
+        lista_particiones = list()
+        tam_memo = 0
+        ult_dir = 0
+        for i in range(len(particiones)):
+            nueva_particion = Particion(id=i+1)
+            if i != 0:
+                dir_inicio = ult_dir
+                nueva_particion.setDirInicio(dir_inicio)
+            nueva_particion.setTam(particiones[i])
+            # print('Se creó una partición nueva')
+            # print(f'id = {nueva_particion.getId()}')
+            # print(f'Dir de inicio = {nueva_particion.getDirInicio()}')
+            # print(f'Tamaño = {nueva_particion.getTam()} KB')
+            # print(f'Proceso asignado = {nueva_particion.getProcAsignado()}')
+            # print(f'fragmentación = {nueva_particion.getFragmentacion()}\n')
+            ult_dir += nueva_particion.getTam() + 1
+            lista_particiones.append(nueva_particion)
+        self.particiones = lista_particiones
+
+
+    def getCantPart(self):
+        return len(self.particiones)
+
+    def getTam(self):
+        tamanio = 0
+        for part in self.particiones:
+            tamanio += part.getTam()
+
+        return tamanio
 
 
 
 class Particion():
-    pass
+    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None):
+        self.id = id
+        self.dirInicio = dirInicio
+        self.tam = tam
+        self.procAsignado = procAsignado
+        self.fragmentacion = fragmentacion
+
+    #geters
+    def getId(self):
+        return self.id
+
+    def getDirInicio(self):
+        return self.dirInicio
+
+    def getTam(self):
+        return self.tam
+
+    def getProcAsignado(self):
+        return self.procAsignado
+
+    def getFragmentacion(self):
+        return self.fragmentacion
+    
+    #seters
+    def setId(self, id):
+        self.id = id
+
+    def setDirInicio(self, dirInicio):
+        self.dirInicio = dirInicio
+
+    def setTam(self, tam):
+        self.tam = tam
+
+    def setProcAsignado(self, id_proceso):
+        self.procAsignado = id_proceso
+
+    def setFragmentacion(self, fragmentacion):
+        self.fragmentacion = fragmentacion
+
+
+
+
+
+
+

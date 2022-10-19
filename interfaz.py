@@ -124,7 +124,8 @@ def cargar_archivo(nombre_fichero):
                 break
 
     if error != True:
-        presentar_datos(contenido[:-1])
+        print(contenido[:-1])
+        presentar_datos(contenido)
 
     print(f'Cerrando fichero: "{nombre_fichero}"')
 
@@ -136,8 +137,8 @@ def cargar_archivo(nombre_fichero):
 #       ALGORITMO
 #------------------------
 
-COLUMNAS = 80
-LINEAS = 20
+COLUMNAS = 400
+LINEAS = 400
 TITULO_MENU = 'MENU'
 OPCIONES_MENU = {
     '1': ('Cargar procesos manualmente ', 'carga_manual()'),
