@@ -168,6 +168,16 @@ class Memoria():
 
         return tamanio
 
+    def libre(self):
+        # Retorna una lista booleanos indicando si la partición está libre
+        # cada posición de la lista corresponde a una partición en el orden que 
+        # fueron creadas
+        part_libre = list()
+        for part in self.particiones:
+            part_libre.append(part.libre())
+
+        return part_libre
+
 
 
 class Particion():
@@ -210,6 +220,14 @@ class Particion():
     def setFragmentacion(self, fragmentacion):
         self.fragmentacion = fragmentacion
 
+
+    def libre(self):
+        # si la partición no tiene asignado un proceso returno True = Libre}
+        # contrario retorna False
+        if self.procAsignado is None:
+            return True
+
+        return False
 
 
 
