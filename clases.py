@@ -45,10 +45,12 @@ class Menu():
             # lectura del archivo como lista de strings quitando el salto de linea
             contenido = fichero.read().split('\n') # lista de string
 
+        # formatea lista de string en lsita de listas
         for elemento in contenido:
             lista_temp.append(elemento.strip('[]').split(','))
         
-            
+        # Validación de datos de procesos
+        # devuelve lista de lista con datos de procesos (datos_procesos)
         for i in range(0, len(lista_temp)):
             elem_formateados = list()
             elem = lista_temp[i]
@@ -62,11 +64,23 @@ class Menu():
                         print('No se permiten números flotantes en los datos de los procesos.')
                         print('Verifique los datos en el archivo, deben respetar el formato establecido en la documentación.')
                         print('Una vez corrija el(los) error(es), vualva a ejecutar el programa.')
-                        return exit()
+                        sys.exit()
                     except ValueError:
                         elem_formateados.append(temp)
 
             datos_procesos.append(elem_formateados)
+
+        # Control de procesos con ID repetidos
+        lista_id = list()
+        for proc in datos_procesos:
+            # Se guardan ID's tmeporalmente para control
+            lista_id.append(proc[0])
+
+        for proc in datos_procesos:
+            # Compara por cada proceso si su ID se repite
+            if lista_id.count(proc[0]) > 1:
+                print()
+                sys.exit('Hay procesos con el mismo ID en el archivo')
 
         return datos_procesos
 
@@ -222,7 +236,7 @@ class Particion():
 
 
     def libre(self):
-        # si la partición no tiene asignado un proceso returno True = Libre}
+        # si la partición no tiene asignado un proceso retorna True = Libre}
         # contrario retorna False
         if self.procAsignado is None:
             return True
