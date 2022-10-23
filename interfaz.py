@@ -157,6 +157,7 @@ while not valido:
     opcion = input('> ')
     valido = validar(opcion)
 
+    
 
 if opcion == '1':
     lista_nuevos_procesos = carga_manual()
