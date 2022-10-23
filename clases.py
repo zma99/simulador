@@ -3,7 +3,6 @@ import sys
 from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
-
 class Consola():
     #falta definir
     def __init__(self, columnas=0, lineas=0):
