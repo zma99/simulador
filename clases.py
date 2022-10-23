@@ -25,7 +25,6 @@ class Consola():
 
     
 
-
 class Menu(): 
     def __init__(self, opciones):
         # opciones debe ser un diccionario
