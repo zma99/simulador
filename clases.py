@@ -90,14 +90,18 @@ class Menu():
         os.system('cls')
         while (salir == 's') and (i < 11):
             archivo.write('[')
-            v = input(f'ingrese el id del proceso N°{i}: ')
+            v = input(f'ingrese el ID del proceso N°{i}: ')
+            while not v.isnumeric():
+                os.system('cls')
+                print('¡Solo puede ingresar numeros enteros en este campo!\n')
+                v = input(f'ingrese el ID del proceso N°{i}: ')
             archivo.write(v)
             archivo.write(',')
             
             v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
             while not v.isnumeric():
                 os.system('cls')
-                print('¡No puede ingresar letras en este campo!\n')
+                print('¡Solo puede ingresar numeros enteros en este campo!\n')
                 v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
             archivo.write(v)
             archivo.write(',')
@@ -105,7 +109,7 @@ class Menu():
             v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
             while not v.isnumeric():
                 os.system('cls')
-                print('¡No puede ingresar letras en este campo!\n')
+                print('¡Solo puede ingresar numeros enteros en este campo!\n')
                 v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
             archivo.write(v)
             archivo.write(',')
@@ -123,7 +127,7 @@ class Menu():
                         print('El tamaño del proceso debe ser un valor menor a 250KB\n')
                 else:
                     os.system('cls')
-                    print('¡No puede ingresar letras en este campo!\n')
+                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
 
             opcion = True
             salir = input('Desea cargar otro proceso? (s/n)')
