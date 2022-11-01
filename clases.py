@@ -1,27 +1,27 @@
 import os
 import sys
 from sys import platform
+from turtle import pos
 from tabulate import tabulate # Es necesario instalar
 
 
 class Consola():
     #falta definir
-    def __init__(self, columnas=0, lineas=0):
-        self.columnas = columnas
-        self.lineas = lineas
+    def __init__(self, columnas=800):
+        self.formato(columnas)
+
     
     def limpiar(self):
         os.system('cls')
 
-    def pausa(self):
+    def esperar(self):
         os.system('pause')
         
-    def formato(self, columnas, lineas):
-        self.__init__(columnas, lineas)
+    def formato(self, columnas):
+        #self.__init__(columnas, lineas)
         self.limpiar()
         os.system('TITLE Simulador')
-        os.system(f'MODE con:cols={columnas} lines={lineas}')
-        #os.system('pause')
+        os.system(f'MODE con:cols={columnas}')
 
     
 
@@ -126,13 +126,44 @@ class Tabla():
         print(tabulate(self.datos, headers=self.encabezados, tablefmt='fancy_grid'))
 
 
-
 class Proceso():
-    def __init__(self, id=None, ta=None, ti=None, tam=None): # ta=tiempo arribo, ti=tiempo irrumpción, tam=tamaño
-        self.id = id
-        self.ta = ta
-        self.ti = ti
-        self.tam = tam
+    def __init__(self, id=None, ta=None, ti=None, tam=None, est=None, ubi=None):
+        self.__id = id    #identificador de proceso
+        self.__ta = ta    #tiempo de arribo a cola de listos
+        self.__ti = ti    #tiempo de irrupción en CPU
+        self.__tam = tam  #tamaño de proceso en KB
+        self.__est = est  #estado E=ejecutándose / L=listo / B=bloqueado / LS=listo-suspendido / BS=bloqueado-suspendido
+        self.__ubi = ubi  #ubicación M = Memoria, D = Disco
+
+    def getId(self):
+        return self.__id
+
+    def getTa(self):
+        return self.__ta
+
+    def getTi(self):
+        return self.__ti
+
+    def getTam(self):
+        return self.__tam
+
+    def getEst(self):
+        return self.__est
+
+    def getUbi(self):
+        return self.__ubi
+
+    def __str__(self):
+        return str(self.__id)
+
+
+
+class Cpu():
+    def __init__(self, reloj):
+        self.reloj = reloj
+
+    def getReloj(self):
+        return self.reloj
 
 
 class Memoria():
@@ -145,7 +176,7 @@ class Memoria():
         # validación
         for i in range(len(particiones)):
             if type(particiones[i]) != int:
-                ventana_memo.limpiar()
+                #ventana_memo.limpiar()
                 print('Los datos ingresados para crear particiones no son válidos. Sólo se permiten números enteros.')
                 print(f'Error en el elemento: <{i}> {type(particiones[i])}')
                 print('Corrija los errores y vuelva a ejecutar el programa.')
@@ -182,6 +213,14 @@ class Memoria():
 
         return tamanio
 
+
+    def worstfit(self, lista_procesos):
+        #proceso = lista_procesos.pop(0)
+        part = self.partLibreMayor()
+        if not part is None:
+            part.setProcAsignado(lista_procesos.pop(0).getId())
+
+
     def libre(self):
         # Retorna una lista booleanos indicando si la partición está libre
         # cada posición de la lista corresponde a una partición en el orden que 
@@ -192,6 +231,17 @@ class Memoria():
 
         return part_libre
 
+
+    def partLibreMayor(self):
+        mayorTam = 0
+        for part in self.particiones:
+            if part.libre() and part.getTam() > mayorTam:
+                mayorTam = part.getTam()
+                partMayor = part
+            else: 
+                partMayor = None
+        
+        return partMayor
 
 
 class Particion():
@@ -247,4 +297,61 @@ class Particion():
 
 
 
+class LargoPlazo():
+    def __init__(self, multiprog=5):
+        self.multiprog = multiprog
 
+    def getMultiprog(self):
+        return self.multiprog
+
+
+
+
+    def admitirProcesos(self, lista_procesos, memoria):
+        # Recibe una lista de listas de procesos y sus datos,
+        # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
+        asignados = 0
+        while len(lista_procesos) > 0:
+            if memoria.libre():
+                while asignados < self.getMultiprog():
+                    try:
+                        memoria.worstfit(lista_procesos)
+                        print('Proceso asignado')
+                        asignados += 1
+                    except ValueError:
+                        print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
+                sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
+
+
+
+        
+    def llamar(self, datos_procesos, memoria):
+        lista_procesos = list()
+        while True:
+            if not datos_procesos is None:
+                for proc in datos_procesos:
+                    nuevo_proc = Proceso(
+                        proc[0], # ID
+                        proc[1], # TA
+                        proc[2], # TI
+                        proc[3]  # TAM
+                    )
+                    lista_procesos.append(nuevo_proc)
+                self.admitirProcesos(lista_procesos, memoria)
+            sys.exit('No hay procesos para tratar.\nSaliendo...')              
+
+
+
+
+class CortoPlazo():
+    def __init__(self):
+        pass
+
+    def get(self):
+        pass
+
+    def SJF(self, lista):
+        pass
+
+    def dispatcher(self):
+        pass

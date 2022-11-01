@@ -10,7 +10,7 @@ OPCIONES_MENU ={
 
 if __name__ == '__main__':
     ventana = Consola()
-    ventana.limpiar()
+    #ventana.limpiar()
     menu = Menu(OPCIONES_MENU)
     menu.mostrar()
     datos_procesos = menu.capturar()
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     tabla_planificacion.construir()
 
     # Praparando memoria
-    datos_particiones = [12,25,40,100]
+    datos_particiones = [100,250,120,60]
     #print(f'Las particiones se crearán con los siguiente datos: {datos_particiones}\n\n')
     memo = Memoria(datos_particiones)
     #print(memo.particiones[0].getId())
@@ -35,10 +35,15 @@ if __name__ == '__main__':
         particion.append(part.getTam())
         datos_particiones.append(particion)
 
-    encabezados =['Num', 'Dir inicio', 'Tamaño (KB)']
+    encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
     monitor_memo = Tabla('monitor_memo', encabezados, datos_particiones)
     print('\nDistribución de particiones en MP:')
     monitor_memo.construir()
 
     print('Cantidad de particiones: ', memo.getCantPart())
     print(f'Tamaño total de la memoria: {memo.getTam()} KB')
+
+    ventana.esperar()
+    ventana.limpiar()
+    p_largo = LargoPlazo()
+    p_largo.llamar(datos_procesos, memo)
