@@ -25,7 +25,6 @@ class Consola():
 
     
 
-
 class Menu(): 
     def __init__(self, opciones):
         # opciones debe ser un diccionario
@@ -167,6 +166,8 @@ class Cpu():
 
 
 class Memoria():
+    # Representa memoria principal de un sistema de cómputo
+
     def __init__(self, particiones):
         # 'particiones se pasa como lista, la cantidad de elementos es igual a cantidad de particiones
         # 'particiones' tiene el formato: [TAM_SO, TAM_PART_1, TAM_PART_2, ... TAM_PART_N]
@@ -176,7 +177,6 @@ class Memoria():
         # validación
         for i in range(len(particiones)):
             if type(particiones[i]) != int:
-                #ventana_memo.limpiar()
                 print('Los datos ingresados para crear particiones no son válidos. Sólo se permiten números enteros.')
                 print(f'Error en el elemento: <{i}> {type(particiones[i])}')
                 print('Corrija los errores y vuelva a ejecutar el programa.')
@@ -215,7 +215,8 @@ class Memoria():
 
 
     def worstfit(self, lista_procesos):
-        #proceso = lista_procesos.pop(0)
+        # Recibe lista de procesos para asignar a particiones libres
+        # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
         if not part is None:
             part.setProcAsignado(lista_procesos.pop(0).getId())
@@ -233,6 +234,8 @@ class Memoria():
 
 
     def partLibreMayor(self):
+        # Retorna el objetivo Particion de mayor tamaño que está libre
+        # Contrario devuelve None
         mayorTam = 0
         for part in self.particiones:
             if part.libre() and part.getTam() > mayorTam:
@@ -245,6 +248,8 @@ class Memoria():
 
 
 class Particion():
+    # Representa un objeto de tipo partición de memoria
+
     def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None):
         self.id = id
         self.dirInicio = dirInicio
@@ -286,7 +291,7 @@ class Particion():
 
 
     def libre(self):
-        # si la partición no tiene asignado un proceso retorna True = Libre}
+        # si la partición no tiene asignado un proceso retorna True = Libre
         # contrario retorna False
         if self.procAsignado is None:
             return True
@@ -308,7 +313,7 @@ class LargoPlazo():
 
 
     def admitirProcesos(self, lista_procesos, memoria):
-        # Recibe una lista de listas de procesos y sus datos,
+        # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
         asignados = 0
         while len(lista_procesos) > 0:
@@ -326,6 +331,10 @@ class LargoPlazo():
 
         
     def llamar(self, datos_procesos, memoria):
+        # Ejecuta el planificador de SO a largo plazo
+        # Toma los datos procesos validados y crea una instancia de Proceso
+        # por cada uno, luego asigna a particiones disponibles
+
         lista_procesos = list()
         while True:
             if not datos_procesos is None:
