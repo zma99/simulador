@@ -1,7 +1,6 @@
 import os
 import sys
 from sys import platform
-from turtle import pos
 from tabulate import tabulate # Es necesario instalar
 
 
