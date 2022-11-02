@@ -121,13 +121,32 @@ class Menu():
 
 class Tabla():
     def __init__(self, id, encabezados, datos):
-        self.id = id                        # un identificador
-        self.encabezados = encabezados      # list of strings: [ 'fila 1 col 1', 'fila 1 col 2', ... , 'fila 1 col N' ]
-        self.datos = datos                  # list of list: [ [datos fila 1], [ datos fila dos ], ... , [datos fila N] ]
+        self.__id = id                        # un identificador
+        self.__encabezados = encabezados      # list of strings: [ 'fila 1 col 1', 'fila 1 col 2', ... , 'fila 1 col N' ]
+        self.__datos = datos                  # list of list: [ [datos fila 1], [ datos fila dos ], ... , [datos fila N] ]
+
+    def getId(self):
+        return self.__id
+
+    def getEncabezados(self):
+        return self.__encabezados
+
+    def getDatos(self):
+        return self.__datos
+
+    def setId(self, id):
+        self.__id = id
+
+    def setEncabezados(self, lista_encabezados):
+        self.__encabezados = lista_encabezados
+
+    def setDatos(self, lista_datos):
+        self.__datos = lista_datos
+
 
     def construir(self):
         # 'tabulate' permite imprimir datos en formato de tabla muy fácil
-        print(tabulate(self.datos, headers=self.encabezados, tablefmt='fancy_grid'))
+        print(tabulate(self.__datos, headers=self.__encabezados, tablefmt='fancy_grid'))
 
 
 class Proceso():
@@ -154,8 +173,26 @@ class Proceso():
     def getEst(self):
         return self.__est
 
-    def getUbi(self):
+    def setUbi(self):
         return self.__ubi
+
+    def setId(self, id):
+        self.__id = id
+
+    def setTa(self, ta):
+        self.__ta = ta
+
+    def setTi(self, ti):
+        self.__ti = ti
+
+    def setTam(self, tam):
+        self.__tam = tam
+
+    def setEst(self, estado):
+        self.__est = estado
+
+    def setUbi(self, ubi):
+        self.__ubi = ubi
 
     def __str__(self):
         return str(self.__id)
@@ -164,10 +201,13 @@ class Proceso():
 
 class Cpu():
     def __init__(self, reloj):
-        self.reloj = reloj
+        self.__reloj = reloj
 
     def getReloj(self):
-        return self.reloj
+        return self.__reloj
+
+    def setReloj(self, reloj):
+        self.__reloj = reloj
 
 
 class Memoria():
@@ -189,7 +229,7 @@ class Memoria():
         
         # creando particiones
         lista_particiones = list()
-        tam_memo = 0
+        #tam_memo = 0
         ult_dir = 0
         for i in range(len(particiones)):
             nueva_particion = Particion(id=i+1)
@@ -205,15 +245,19 @@ class Memoria():
             # print(f'fragmentación = {nueva_particion.getFragmentacion()}\n')
             ult_dir += nueva_particion.getTam() + 1
             lista_particiones.append(nueva_particion)
-        self.particiones = lista_particiones
+        self.__particiones = lista_particiones
+
+    
+    def getParticiones(self):
+        return self.__particiones
 
 
     def getCantPart(self):
-        return len(self.particiones)
+        return len(self.__particiones)
 
     def getTam(self):
         tamanio = 0
-        for part in self.particiones:
+        for part in self.__particiones:
             tamanio += part.getTam()
 
         return tamanio
@@ -232,7 +276,7 @@ class Memoria():
         # cada posición de la lista corresponde a una partición en el orden que 
         # fueron creadas
         part_libre = list()
-        for part in self.particiones:
+        for part in self.__particiones:
             part_libre.append(part.libre())
 
         return part_libre
@@ -242,7 +286,7 @@ class Memoria():
         # Retorna el objetivo Particion de mayor tamaño que está libre
         # Contrario devuelve None
         mayorTam = 0
-        for part in self.particiones:
+        for part in self.__particiones:
             if part.libre() and part.getTam() > mayorTam:
                 mayorTam = part.getTam()
                 partMayor = part
@@ -256,49 +300,49 @@ class Particion():
     # Representa un objeto de tipo partición de memoria
 
     def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None):
-        self.id = id
-        self.dirInicio = dirInicio
-        self.tam = tam
-        self.procAsignado = procAsignado
-        self.fragmentacion = fragmentacion
+        self.__id = id
+        self.__dirInicio = dirInicio
+        self.__tam = tam
+        self.__procAsignado = procAsignado
+        self.__fragmentacion = fragmentacion
 
     #geters
     def getId(self):
-        return self.id
+        return self.__id
 
     def getDirInicio(self):
-        return self.dirInicio
+        return self.__dirInicio
 
     def getTam(self):
-        return self.tam
+        return self.__tam
 
     def getProcAsignado(self):
-        return self.procAsignado
+        return self.__procAsignado
 
     def getFragmentacion(self):
-        return self.fragmentacion
+        return self.__fragmentacion
     
     #seters
     def setId(self, id):
-        self.id = id
+        self.__id = id
 
     def setDirInicio(self, dirInicio):
-        self.dirInicio = dirInicio
+        self.__dirInicio = dirInicio
 
     def setTam(self, tam):
-        self.tam = tam
+        self.__tam = tam
 
     def setProcAsignado(self, id_proceso):
-        self.procAsignado = id_proceso
+        self.__procAsignado = id_proceso
 
     def setFragmentacion(self, fragmentacion):
-        self.fragmentacion = fragmentacion
+        self.__fragmentacion = fragmentacion
 
 
     def libre(self):
         # si la partición no tiene asignado un proceso retorna True = Libre
         # contrario retorna False
-        if self.procAsignado is None:
+        if self.__procAsignado is None:
             return True
 
         return False
@@ -309,10 +353,10 @@ class Particion():
 
 class LargoPlazo():
     def __init__(self, multiprog=5):
-        self.multiprog = multiprog
+        self.__multiprog = multiprog
 
     def getMultiprog(self):
-        return self.multiprog
+        return self.__multiprog
 
 
 

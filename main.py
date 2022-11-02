@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     datos_particiones = list()
 
-    for part in memo.particiones:
+    for part in memo.getParticiones():
         particion = list()
         particion.append(part.getId())
         particion.append(part.getDirInicio())
