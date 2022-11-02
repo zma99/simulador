@@ -8,7 +8,8 @@ from tabulate import tabulate # Es necesario instalar
 class Consola():
     #falta definir
     def __init__(self, columnas=800):
-        self.formato(columnas)
+        #self.formato(columnas)
+        pass
 
     
     def limpiar(self):
@@ -44,12 +45,13 @@ class Menu():
             # lectura del archivo como lista de strings quitando el salto de linea
             contenido = fichero.read().split('\n') # lista de string
 
-        # formatea lista de string en lsita de listas
+        # formatea lista de string en lista de listas
         for elemento in contenido:
             lista_temp.append(elemento.strip('[]').split(','))
         
         # Validación de datos de procesos
         # devuelve lista de lista con datos de procesos (datos_procesos)
+        
         for i in range(0, len(lista_temp)):
             elem_formateados = list()
             elem = lista_temp[i]
@@ -65,7 +67,10 @@ class Menu():
                         print('Una vez corrija el(los) error(es), vualva a ejecutar el programa.')
                         sys.exit()
                     except ValueError:
-                        elem_formateados.append(temp)
+                        if i==0:
+                            elem_formateados.append(temp)
+                        else:
+                            sys.exit('\nRevise los datos de los procesos, deben ser números enteros para TA, TI y TAM.\n\nSaliendo...')
 
             datos_procesos.append(elem_formateados)
 
