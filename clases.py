@@ -85,6 +85,11 @@ class Menu():
                 print()
                 sys.exit('Hay procesos con el mismo ID en el archivo')
 
+        for i in range(1, len(datos_procesos)):
+            tam_proc = datos_procesos[i][3]
+            if int(tam_proc) > 250:
+                sys.exit('\nERROR: Hay al menos un proceso de tamaño mayor a 250 KB y no es posible tratar. \n\nCorrija e intente de nuevo.')
+
         return datos_procesos
 
     def capturar(self):
@@ -266,8 +271,11 @@ class Memoria():
         # Recibe lista de procesos para asignar a particiones libres
         # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
-        if not part is None:
+        if part != 0:  
+            #print(lista_procesos.pop(0).getId())
+            #os.system('pause')
             part.setProcAsignado(lista_procesos.pop(0).getId())
+            
 
 
     def libre(self):
@@ -285,14 +293,23 @@ class Memoria():
         # Retorna el objetivo Particion de mayor tamaño que está libre
         # Contrario devuelve None
         mayorTam = 0
+        partMayor = 0
         for part in self.__particiones:
             if part.libre() and part.getTam() > mayorTam:
                 mayorTam = part.getTam()
                 partMayor = part
-            else: 
-                partMayor = None
+                print(partMayor)
+                #os.system('pause')
         
         return partMayor
+
+
+    def procAsignados(self):
+        listos = list()
+        for part in self.__particiones:
+            listos.append(part.getProcAsignado())
+
+        return listos
 
 
 class Particion():
@@ -363,6 +380,7 @@ class LargoPlazo():
     def admitirProcesos(self, lista_procesos, memoria):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
+        listos = list()
         asignados = 0
         while len(lista_procesos) > 0:
             if memoria.libre():
@@ -373,7 +391,11 @@ class LargoPlazo():
                         asignados += 1
                     except ValueError:
                         print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
+                listos = memoria.procAsignados()
+                print(listos)
                 sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
+
+        
 
 
 
