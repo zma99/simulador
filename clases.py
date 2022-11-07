@@ -119,13 +119,14 @@ class Menu():
             archivo.write('[ID,TA,TI,TAM (KB)]')
             salir = 's'
             i = 1
-            os.system('cls')
+            ventana = Consola()
+            ventana.limpiar()
             while (salir == 's') and (i < 11):
                 archivo.write('\n')
                 archivo.write('[')
                 v = input(f'ingrese el ID del proceso N°{i}: ')
                 while not v.isnumeric():
-                    os.system('cls')
+                    ventana.limpiar()
                     print('¡Solo puede ingresar numeros enteros en este campo!\n')
                     v = input(f'ingrese el ID del proceso N°{i}: ')
                 archivo.write(v)
@@ -133,7 +134,7 @@ class Menu():
                 
                 v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
                 while not v.isnumeric():
-                    os.system('cls')
+                    ventana.limpiar()
                     print('¡Solo puede ingresar numeros enteros en este campo!\n')
                     v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
                 archivo.write(v)
@@ -141,7 +142,7 @@ class Menu():
                 
                 v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
                 while not v.isnumeric():
-                    os.system('cls')
+                    ventana.limpiar()
                     print('¡Solo puede ingresar numeros enteros en este campo!\n')
                     v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
                 archivo.write(v)
@@ -156,10 +157,10 @@ class Menu():
                             archivo.write(']')
                             n = False
                         else:
-                            os.system('cls')
+                            ventana.limpiar()
                             print('El tamaño del proceso debe ser un valor menor a 250KB\n')
                     else:
-                        os.system('cls')
+                        ventana.limpiar()
                         print('¡Solo puede ingresar numeros enteros en este campo!\n')
 
                 opcion = True
@@ -170,7 +171,7 @@ class Menu():
                     elif salir == 'n':
                         opcion = False
                     else:
-                        os.system('cls')
+                        ventana.limpiar()
                         salir = input('Solo ingrese (s/n)')
 
 
@@ -183,9 +184,8 @@ class Menu():
             try:
                 opc = int(input('\n> '))
                 if opc == 1:
-                    pass
                     salir = True
-                    while salir:
+                    while salir: #esto es para que el usuario cargue procesos hasta que desee salir
                         self.carga_manual()
                         return self.cargar_archivo('procesos_precargados.txt')
                 elif opc == 2:
