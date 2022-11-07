@@ -40,6 +40,7 @@ if __name__ == '__main__':
     print('\nDistribución de particiones en MP:')
     monitor_memo.construir()
 
+
     print('Cantidad de particiones: ', memo.getCantPart())
     print(f'Tamaño total de la memoria: {memo.getTam()} KB')
 

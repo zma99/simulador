@@ -4,6 +4,25 @@ from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
 
+class Simulador():
+    def __init__(self):
+        self.__reloj = 0
+
+    def mainloop(self):
+        # cuerpo principal del programa
+        while True:
+            break
+
+    def cargar(self):
+        # carga de archivo y carga manual
+        pass
+
+    def refrescar(self):
+        # para actualizar interfaz
+        pass
+            
+
+
 class Consola():
     #falta definir
     def __init__(self, columnas=800):
@@ -12,7 +31,10 @@ class Consola():
 
     
     def limpiar(self):
-        os.system('cls')
+        if platform == 'win32':
+            os.system('cls')
+        else:
+            os.system('clear')
 
     def esperar(self):
         os.system('pause')
@@ -23,7 +45,7 @@ class Consola():
         os.system('TITLE Simulador')
         os.system(f'MODE con:cols={columnas}')
 
-    
+
 
 class Menu(): 
     def __init__(self, opciones):
@@ -69,7 +91,7 @@ class Menu():
                         if i==0:
                             elem_formateados.append(temp)
                         else:
-                            sys.exit('\nRevise los datos de los procesos, deben ser números enteros para TA, TI y TAM.\n\nSaliendo...')
+                            sys.exit('\nRevise los datos de los procesos, deben ser números enteros para ID, TA, TI y TAM.\n\nSaliendo...')
 
             datos_procesos.append(elem_formateados)
 
@@ -241,6 +263,9 @@ class Memoria():
                 dir_inicio = ult_dir
                 nueva_particion.setDirInicio(dir_inicio)
             nueva_particion.setTam(particiones[i])
+            
+            if i == 0:
+                nueva_particion.setSO(True)
             # print('Se creó una partición nueva')
             # print(f'id = {nueva_particion.getId()}')
             # print(f'Dir de inicio = {nueva_particion.getDirInicio()}')
@@ -271,9 +296,7 @@ class Memoria():
         # Recibe lista de procesos para asignar a particiones libres
         # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
-        if part != 0:  
-            #print(lista_procesos.pop(0).getId())
-            #os.system('pause')
+        if part != 0:
             part.setProcAsignado(lista_procesos.pop(0).getId())
             
 
@@ -315,12 +338,13 @@ class Memoria():
 class Particion():
     # Representa un objeto de tipo partición de memoria
 
-    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None):
+    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None, so=False):
         self.__id = id
         self.__dirInicio = dirInicio
         self.__tam = tam
         self.__procAsignado = procAsignado
         self.__fragmentacion = fragmentacion
+        self.__so = so
 
     #geters
     def getId(self):
@@ -337,6 +361,9 @@ class Particion():
 
     def getFragmentacion(self):
         return self.__fragmentacion
+
+    def getSO(self):
+        return self.__so
     
     #seters
     def setId(self, id):
@@ -354,16 +381,17 @@ class Particion():
     def setFragmentacion(self, fragmentacion):
         self.__fragmentacion = fragmentacion
 
+    def setSO(self, so):
+        self.__so = so
+
 
     def libre(self):
         # si la partición no tiene asignado un proceso retorna True = Libre
         # contrario retorna False
-        if self.__procAsignado is None:
+        if not self.__so and self.__procAsignado is None:
             return True
 
         return False
-
-
 
 
 
@@ -373,8 +401,6 @@ class LargoPlazo():
 
     def getMultiprog(self):
         return self.__multiprog
-
-
 
 
     def admitirProcesos(self, lista_procesos, memoria):
@@ -418,7 +444,6 @@ class LargoPlazo():
                     lista_procesos.append(nuevo_proc)
                 self.admitirProcesos(lista_procesos, memoria)
             sys.exit('No hay procesos para tratar.\nSaliendo...')              
-
 
 
 
