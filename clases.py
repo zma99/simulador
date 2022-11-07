@@ -83,6 +83,7 @@ class Menu():
         return datos_procesos
 
     def carga_manual(self):     #se crea un txt igual al "procesos_precargados" a medida que se ingresa los datos
+<<<<<<< Updated upstream
         archivo = open('procesos_cargados.txt','w')
         archivo.write('[ID,TA,TI,TAM (KB)]\n')
         salir = 's'
@@ -143,6 +144,72 @@ class Menu():
 
             i = i+1
         archivo.close
+=======
+            archivo = open('procesos_precargados.txt','w')
+            archivo.write('[ID,TA,TI,TAM (KB)]')
+            salir = 's'
+            i = 1
+            os.system('cls')
+            while (salir == 's') and (i < 11):
+                archivo.write('\n')
+                archivo.write('[')
+                v = input(f'ingrese el ID del proceso N°{i}: ')
+                while not v.isnumeric():
+                    os.system('cls')
+                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
+                    v = input(f'ingrese el ID del proceso N°{i}: ')
+                archivo.write(v)
+                archivo.write(',')
+                
+                v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
+                while not v.isnumeric():
+                    os.system('cls')
+                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
+                    v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
+                archivo.write(v)
+                archivo.write(',')
+                
+                v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
+                while not v.isnumeric():
+                    os.system('cls')
+                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
+                    v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
+                archivo.write(v)
+                archivo.write(',')
+                
+                n = True
+                while n:
+                    v = input(f'ingrese el Tamaño del proceso N°{i}: ')
+                    if v.isnumeric():
+                        if int(v) < 251:
+                            archivo.write(v)
+                            archivo.write(']')
+                            n = False
+                        else:
+                            os.system('cls')
+                            print('El tamaño del proceso debe ser un valor menor a 250KB\n')
+                    else:
+                        os.system('cls')
+                        print('¡Solo puede ingresar numeros enteros en este campo!\n')
+
+                opcion = True
+                salir = input('Desea cargar otro proceso? (s/n)')
+                while opcion:
+                    if salir == 's':
+                        opcion = False
+                    elif salir == 'n':
+                        opcion = False
+                    else:
+                        os.system('cls')
+                        salir = input('Solo ingrese (s/n)')
+
+
+                i = i+1
+            
+            archivo.close
+
+
+>>>>>>> Stashed changes
 
     def capturar(self):
         while True:
@@ -152,7 +219,11 @@ class Menu():
                     salir = True
                     while salir:
                         self.carga_manual()
+<<<<<<< Updated upstream
                         return self.cargar_archivo('procesos_cargados.txt')
+=======
+                        return self.cargar_archivo('procesos_precargados.txt')
+>>>>>>> Stashed changes
 
                 elif opc == 2:
                     return self.cargar_archivo('procesos_precargados.txt')
