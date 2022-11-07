@@ -3,26 +3,49 @@ import sys
 from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
+
+class Simulador():
+    def __init__(self):
+        self.__reloj = 0
+
+    def mainloop(self):
+        # cuerpo principal del programa
+        while True:
+            break
+
+    def cargar(self):
+        # carga de archivo y carga manual
+        pass
+
+    def refrescar(self):
+        # para actualizar interfaz
+        pass
+            
+
+
 class Consola():
     #falta definir
-    def __init__(self, columnas=0, lineas=0):
-        self.columnas = columnas
-        self.lineas = lineas
+    def __init__(self, columnas=800):
+        #self.formato(columnas)
+        pass
+
     
     def limpiar(self):
-        os.system('cls')
+        if platform == 'win32':
+            os.system('cls')
+        else:
+            os.system('clear')
 
-    def pausa(self):
+    def esperar(self):
         os.system('pause')
         
-    def formato(self, columnas, lineas):
-        self.__init__(columnas, lineas)
+    def formato(self, columnas):
+        #self.__init__(columnas, lineas)
         self.limpiar()
         os.system('TITLE Simulador')
-        os.system(f'MODE con:cols={columnas} lines={lineas}')
-        #os.system('pause')
+        os.system(f'MODE con:cols={columnas}')
 
-    
+
 
 class Menu(): 
     def __init__(self, opciones):
@@ -43,12 +66,13 @@ class Menu():
             # lectura del archivo como lista de strings quitando el salto de linea
             contenido = fichero.read().split('\n') # lista de string
 
-        # formatea lista de string en lsita de listas
+        # formatea lista de string en lista de listas
         for elemento in contenido:
             lista_temp.append(elemento.strip('[]').split(','))
         
         # Validación de datos de procesos
         # devuelve lista de lista con datos de procesos (datos_procesos)
+        
         for i in range(0, len(lista_temp)):
             elem_formateados = list()
             elem = lista_temp[i]
@@ -64,7 +88,10 @@ class Menu():
                         print('Una vez corrija el(los) error(es), vualva a ejecutar el programa.')
                         sys.exit()
                     except ValueError:
-                        elem_formateados.append(temp)
+                        if i==0:
+                            elem_formateados.append(temp)
+                        else:
+                            sys.exit('\nRevise los datos de los procesos, deben ser números enteros para ID, TA, TI y TAM.\n\nSaliendo...')
 
             datos_procesos.append(elem_formateados)
 
@@ -80,151 +107,19 @@ class Menu():
                 print()
                 sys.exit('Hay procesos con el mismo ID en el archivo')
 
+        for i in range(1, len(datos_procesos)):
+            tam_proc = datos_procesos[i][3]
+            if int(tam_proc) > 250:
+                sys.exit('\nERROR: Hay al menos un proceso de tamaño mayor a 250 KB y no es posible tratar. \n\nCorrija e intente de nuevo.')
+
         return datos_procesos
-
-    def carga_manual(self):     #se crea un txt igual al "procesos_precargados" a medida que se ingresa los datos
-<<<<<<< Updated upstream
-        archivo = open('procesos_cargados.txt','w')
-        archivo.write('[ID,TA,TI,TAM (KB)]\n')
-        salir = 's'
-        i = 1
-        os.system('cls')
-        while (salir == 's') and (i < 11):
-            archivo.write('[')
-            v = input(f'ingrese el ID del proceso N°{i}: ')
-            while not v.isnumeric():
-                os.system('cls')
-                print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                v = input(f'ingrese el ID del proceso N°{i}: ')
-            archivo.write(v)
-            archivo.write(',')
-            
-            v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
-            while not v.isnumeric():
-                os.system('cls')
-                print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
-            archivo.write(v)
-            archivo.write(',')
-            
-            v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
-            while not v.isnumeric():
-                os.system('cls')
-                print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
-            archivo.write(v)
-            archivo.write(',')
-            
-            n = True
-            while n:
-                v = input(f'ingrese el Tamaño del proceso N°{i}: ')
-                if v.isnumeric():
-                    if int(v) < 251:
-                        archivo.write(v)
-                        archivo.write(']\n')
-                        n = False
-                    else:
-                        os.system('cls')
-                        print('El tamaño del proceso debe ser un valor menor a 250KB\n')
-                else:
-                    os.system('cls')
-                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
-
-            opcion = True
-            salir = input('Desea cargar otro proceso? (s/n)')
-            while opcion:
-                if salir == 's':
-                    opcion = False
-                elif salir == 'n':
-                    opcion = False
-                else:
-                    os.system('cls')
-                    salir = input('Solo ingrese (s/n)')
-
-
-            i = i+1
-        archivo.close
-=======
-            archivo = open('procesos_precargados.txt','w')
-            archivo.write('[ID,TA,TI,TAM (KB)]')
-            salir = 's'
-            i = 1
-            os.system('cls')
-            while (salir == 's') and (i < 11):
-                archivo.write('\n')
-                archivo.write('[')
-                v = input(f'ingrese el ID del proceso N°{i}: ')
-                while not v.isnumeric():
-                    os.system('cls')
-                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                    v = input(f'ingrese el ID del proceso N°{i}: ')
-                archivo.write(v)
-                archivo.write(',')
-                
-                v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
-                while not v.isnumeric():
-                    os.system('cls')
-                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                    v = input(f'ingrese el Tiempo de Arribo del proceso N°{i}: ')
-                archivo.write(v)
-                archivo.write(',')
-                
-                v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
-                while not v.isnumeric():
-                    os.system('cls')
-                    print('¡Solo puede ingresar numeros enteros en este campo!\n')
-                    v = input(f'ingrese el Tiempo de Irrupcion del proceso N°{i}: ')
-                archivo.write(v)
-                archivo.write(',')
-                
-                n = True
-                while n:
-                    v = input(f'ingrese el Tamaño del proceso N°{i}: ')
-                    if v.isnumeric():
-                        if int(v) < 251:
-                            archivo.write(v)
-                            archivo.write(']')
-                            n = False
-                        else:
-                            os.system('cls')
-                            print('El tamaño del proceso debe ser un valor menor a 250KB\n')
-                    else:
-                        os.system('cls')
-                        print('¡Solo puede ingresar numeros enteros en este campo!\n')
-
-                opcion = True
-                salir = input('Desea cargar otro proceso? (s/n)')
-                while opcion:
-                    if salir == 's':
-                        opcion = False
-                    elif salir == 'n':
-                        opcion = False
-                    else:
-                        os.system('cls')
-                        salir = input('Solo ingrese (s/n)')
-
-
-                i = i+1
-            
-            archivo.close
-
-
->>>>>>> Stashed changes
 
     def capturar(self):
         while True:
             try:
                 opc = int(input('\n> '))
                 if opc == 1:
-                    salir = True
-                    while salir:
-                        self.carga_manual()
-<<<<<<< Updated upstream
-                        return self.cargar_archivo('procesos_cargados.txt')
-=======
-                        return self.cargar_archivo('procesos_precargados.txt')
->>>>>>> Stashed changes
-
+                    pass
                 elif opc == 2:
                     return self.cargar_archivo('procesos_precargados.txt')
                 elif opc == 3:
@@ -252,25 +147,98 @@ class Menu():
 
 class Tabla():
     def __init__(self, id, encabezados, datos):
-        self.id = id                        # un identificador
-        self.encabezados = encabezados      # list of strings: [ 'fila 1 col 1', 'fila 1 col 2', ... , 'fila 1 col N' ]
-        self.datos = datos                  # list of list: [ [datos fila 1], [ datos fila dos ], ... , [datos fila N] ]
+        self.__id = id                        # un identificador
+        self.__encabezados = encabezados      # list of strings: [ 'fila 1 col 1', 'fila 1 col 2', ... , 'fila 1 col N' ]
+        self.__datos = datos                  # list of list: [ [datos fila 1], [ datos fila dos ], ... , [datos fila N] ]
+
+    def getId(self):
+        return self.__id
+
+    def getEncabezados(self):
+        return self.__encabezados
+
+    def getDatos(self):
+        return self.__datos
+
+    def setId(self, id):
+        self.__id = id
+
+    def setEncabezados(self, lista_encabezados):
+        self.__encabezados = lista_encabezados
+
+    def setDatos(self, lista_datos):
+        self.__datos = lista_datos
+
 
     def construir(self):
         # 'tabulate' permite imprimir datos en formato de tabla muy fácil
-        print(tabulate(self.datos, headers=self.encabezados, tablefmt='fancy_grid'))
-
+        print(tabulate(self.__datos, headers=self.__encabezados, tablefmt='fancy_grid'))
 
 
 class Proceso():
-    def __init__(self, id=None, ta=None, ti=None, tam=None): # ta=tiempo arribo, ti=tiempo irrumpción, tam=tamaño
-        self.id = id
-        self.ta = ta
-        self.ti = ti
-        self.tam = tam
+    def __init__(self, id=None, ta=None, ti=None, tam=None, est=None, ubi=None):
+        self.__id = id    #identificador de proceso
+        self.__ta = ta    #tiempo de arribo a cola de listos
+        self.__ti = ti    #tiempo de irrupción en CPU
+        self.__tam = tam  #tamaño de proceso en KB
+        self.__est = est  #estado E=ejecutándose / L=listo / B=bloqueado / LS=listo-suspendido / BS=bloqueado-suspendido
+        self.__ubi = ubi  #ubicación M = Memoria, D = Disco
+
+    def getId(self):
+        return self.__id
+
+    def getTa(self):
+        return self.__ta
+
+    def getTi(self):
+        return self.__ti
+
+    def getTam(self):
+        return self.__tam
+
+    def getEst(self):
+        return self.__est
+
+    def setUbi(self):
+        return self.__ubi
+
+    def setId(self, id):
+        self.__id = id
+
+    def setTa(self, ta):
+        self.__ta = ta
+
+    def setTi(self, ti):
+        self.__ti = ti
+
+    def setTam(self, tam):
+        self.__tam = tam
+
+    def setEst(self, estado):
+        self.__est = estado
+
+    def setUbi(self, ubi):
+        self.__ubi = ubi
+
+    def __str__(self):
+        return str(self.__id)
+
+
+
+class Cpu():
+    def __init__(self, reloj):
+        self.__reloj = reloj
+
+    def getReloj(self):
+        return self.__reloj
+
+    def setReloj(self, reloj):
+        self.__reloj = reloj
 
 
 class Memoria():
+    # Representa memoria principal de un sistema de cómputo
+
     def __init__(self, particiones):
         # 'particiones se pasa como lista, la cantidad de elementos es igual a cantidad de particiones
         # 'particiones' tiene el formato: [TAM_SO, TAM_PART_1, TAM_PART_2, ... TAM_PART_N]
@@ -280,7 +248,6 @@ class Memoria():
         # validación
         for i in range(len(particiones)):
             if type(particiones[i]) != int:
-                #ventana_memo.limpiar()
                 print('Los datos ingresados para crear particiones no son válidos. Sólo se permiten números enteros.')
                 print(f'Error en el elemento: <{i}> {type(particiones[i])}')
                 print('Corrija los errores y vuelva a ejecutar el programa.')
@@ -288,7 +255,7 @@ class Memoria():
         
         # creando particiones
         lista_particiones = list()
-        tam_memo = 0
+        #tam_memo = 0
         ult_dir = 0
         for i in range(len(particiones)):
             nueva_particion = Particion(id=i+1)
@@ -296,6 +263,9 @@ class Memoria():
                 dir_inicio = ult_dir
                 nueva_particion.setDirInicio(dir_inicio)
             nueva_particion.setTam(particiones[i])
+            
+            if i == 0:
+                nueva_particion.setSO(True)
             # print('Se creó una partición nueva')
             # print(f'id = {nueva_particion.getId()}')
             # print(f'Dir de inicio = {nueva_particion.getDirInicio()}')
@@ -304,82 +274,188 @@ class Memoria():
             # print(f'fragmentación = {nueva_particion.getFragmentacion()}\n')
             ult_dir += nueva_particion.getTam() + 1
             lista_particiones.append(nueva_particion)
-        self.particiones = lista_particiones
+        self.__particiones = lista_particiones
+
+    
+    def getParticiones(self):
+        return self.__particiones
 
 
     def getCantPart(self):
-        return len(self.particiones)
+        return len(self.__particiones)
 
     def getTam(self):
         tamanio = 0
-        for part in self.particiones:
+        for part in self.__particiones:
             tamanio += part.getTam()
 
         return tamanio
+
+
+    def worstfit(self, lista_procesos):
+        # Recibe lista de procesos para asignar a particiones libres
+        # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
+        part = self.partLibreMayor()
+        if part != 0:
+            part.setProcAsignado(lista_procesos.pop(0).getId())
+            
+
 
     def libre(self):
         # Retorna una lista booleanos indicando si la partición está libre
         # cada posición de la lista corresponde a una partición en el orden que 
         # fueron creadas
         part_libre = list()
-        for part in self.particiones:
+        for part in self.__particiones:
             part_libre.append(part.libre())
 
         return part_libre
 
 
+    def partLibreMayor(self):
+        # Retorna el objetivo Particion de mayor tamaño que está libre
+        # Contrario devuelve None
+        mayorTam = 0
+        partMayor = 0
+        for part in self.__particiones:
+            if part.libre() and part.getTam() > mayorTam:
+                mayorTam = part.getTam()
+                partMayor = part
+                print(partMayor)
+                #os.system('pause')
+        
+        return partMayor
+
+
+    def procAsignados(self):
+        listos = list()
+        for part in self.__particiones:
+            listos.append(part.getProcAsignado())
+
+        return listos
+
 
 class Particion():
-    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None):
-        self.id = id
-        self.dirInicio = dirInicio
-        self.tam = tam
-        self.procAsignado = procAsignado
-        self.fragmentacion = fragmentacion
+    # Representa un objeto de tipo partición de memoria
+
+    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None, so=False):
+        self.__id = id
+        self.__dirInicio = dirInicio
+        self.__tam = tam
+        self.__procAsignado = procAsignado
+        self.__fragmentacion = fragmentacion
+        self.__so = so
 
     #geters
     def getId(self):
-        return self.id
+        return self.__id
 
     def getDirInicio(self):
-        return self.dirInicio
+        return self.__dirInicio
 
     def getTam(self):
-        return self.tam
+        return self.__tam
 
     def getProcAsignado(self):
-        return self.procAsignado
+        return self.__procAsignado
 
     def getFragmentacion(self):
-        return self.fragmentacion
+        return self.__fragmentacion
+
+    def getSO(self):
+        return self.__so
     
     #seters
     def setId(self, id):
-        self.id = id
+        self.__id = id
 
     def setDirInicio(self, dirInicio):
-        self.dirInicio = dirInicio
+        self.__dirInicio = dirInicio
 
     def setTam(self, tam):
-        self.tam = tam
+        self.__tam = tam
 
     def setProcAsignado(self, id_proceso):
-        self.procAsignado = id_proceso
+        self.__procAsignado = id_proceso
 
     def setFragmentacion(self, fragmentacion):
-        self.fragmentacion = fragmentacion
+        self.__fragmentacion = fragmentacion
+
+    def setSO(self, so):
+        self.__so = so
 
 
     def libre(self):
-        # si la partición no tiene asignado un proceso retorna True = Libre}
+        # si la partición no tiene asignado un proceso retorna True = Libre
         # contrario retorna False
-        if self.procAsignado is None:
+        if not self.__so and self.__procAsignado is None:
             return True
 
         return False
 
 
 
+class LargoPlazo():
+    def __init__(self, multiprog=5):
+        self.__multiprog = multiprog
+
+    def getMultiprog(self):
+        return self.__multiprog
+
+
+    def admitirProcesos(self, lista_procesos, memoria):
+        # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
+        # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
+        listos = list()
+        asignados = 0
+        while len(lista_procesos) > 0:
+            if memoria.libre():
+                while asignados < self.getMultiprog():
+                    try:
+                        memoria.worstfit(lista_procesos)
+                        print('Proceso asignado')
+                        asignados += 1
+                    except ValueError:
+                        print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
+                listos = memoria.procAsignados()
+                print(listos)
+                sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
+
+        
 
 
 
+        
+    def llamar(self, datos_procesos, memoria):
+        # Ejecuta el planificador de SO a largo plazo
+        # Toma los datos procesos validados y crea una instancia de Proceso
+        # por cada uno, luego asigna a particiones disponibles
+
+        lista_procesos = list()
+        while True:
+            if not datos_procesos is None:
+                for proc in datos_procesos:
+                    nuevo_proc = Proceso(
+                        proc[0], # ID
+                        proc[1], # TA
+                        proc[2], # TI
+                        proc[3]  # TAM
+                    )
+                    lista_procesos.append(nuevo_proc)
+                self.admitirProcesos(lista_procesos, memoria)
+            sys.exit('No hay procesos para tratar.\nSaliendo...')              
+
+
+
+class CortoPlazo():
+    def __init__(self):
+        pass
+
+    def get(self):
+        pass
+
+    def SJF(self, lista):
+        pass
+
+    def dispatcher(self):
+        pass
