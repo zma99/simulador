@@ -20,6 +20,10 @@ class Simulador():
     def refrescar(self):
         # para actualizar interfaz
         pass
+
+    def contar(self):
+        self.__reloj += 1
+
             
 
 
@@ -255,7 +259,6 @@ class Memoria():
         
         # creando particiones
         lista_particiones = list()
-        #tam_memo = 0
         ult_dir = 0
         for i in range(len(particiones)):
             nueva_particion = Particion(id=i+1)
@@ -298,6 +301,10 @@ class Memoria():
         part = self.partLibreMayor()
         if part != 0:
             part.setProcAsignado(lista_procesos.pop(0).getId())
+            print('Proceso asignado')
+            return True
+        
+        return False
             
 
 
@@ -321,7 +328,6 @@ class Memoria():
             if part.libre() and part.getTam() > mayorTam:
                 mayorTam = part.getTam()
                 partMayor = part
-                print(partMayor)
                 #os.system('pause')
         
         return partMayor
@@ -330,7 +336,8 @@ class Memoria():
     def procAsignados(self):
         listos = list()
         for part in self.__particiones:
-            listos.append(part.getProcAsignado())
+            if not part.getSO():
+                listos.append(part.getProcAsignado())
 
         return listos
 
@@ -398,11 +405,42 @@ class Particion():
 class LargoPlazo():
     def __init__(self, multiprog=5):
         self.__multiprog = multiprog
+        self.__tiTotal = 0
 
     def getMultiprog(self):
         return self.__multiprog
+    
+    def llamar(self, datos_procesos, memoria):
+        # Ejecuta el planificador de SO a largo plazo
+        # Toma los datos procesos validados y crea una instancia de Proceso
+        # por cada uno, luego asigna a particiones disponibles
 
+        lista_procesos = list()
+        while True:
+            if not datos_procesos is None:
+                lista_procesos = self.crearListaProcesos(datos_procesos)
+                self.setTiTotal(lista_procesos)
+                print('\nTiempo de irrupción total: ',self.getTiTotal())
+                self.admitirProcesos(lista_procesos, memoria)
+            sys.exit('No hay procesos para tratar.\nSaliendo...')    
 
+    def crearListaProcesos(self, datos_procesos):
+        lista_procesos = list()
+        for datos in datos_procesos:
+            lista_procesos.append(self.nuevoProceso(datos))
+        
+        return lista_procesos
+
+    def nuevoProceso(self, datos):
+        nuevo_proc = Proceso(
+            datos[0], # ID
+            datos[1], # TA
+            datos[2], # TI
+            datos[3]  # TAM
+        )
+        return nuevo_proc
+
+    
     def admitirProcesos(self, lista_procesos, memoria):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
@@ -413,38 +451,28 @@ class LargoPlazo():
                 while asignados < self.getMultiprog():
                     try:
                         memoria.worstfit(lista_procesos)
-                        print('Proceso asignado')
                         asignados += 1
+                        # if memoria.worstfit(lista_procesos):
+                        #     asignados += 1
+                        # else:
+                        #     listos = memoria.procAsignados()
+                        #     print(listos)
+                        #     #for proceso in listos:
+                        #     print(f'\nEjecutando proceso ID={listos[0]}')
+                        #     memoria
+                        #     listos.pop(0)
+                        #     asignados -= 1
                     except ValueError:
                         print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
-                listos = memoria.procAsignados()
-                print(listos)
                 sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
+         
 
-        
-
-
-
-        
-    def llamar(self, datos_procesos, memoria):
-        # Ejecuta el planificador de SO a largo plazo
-        # Toma los datos procesos validados y crea una instancia de Proceso
-        # por cada uno, luego asigna a particiones disponibles
-
-        lista_procesos = list()
-        while True:
-            if not datos_procesos is None:
-                for proc in datos_procesos:
-                    nuevo_proc = Proceso(
-                        proc[0], # ID
-                        proc[1], # TA
-                        proc[2], # TI
-                        proc[3]  # TAM
-                    )
-                    lista_procesos.append(nuevo_proc)
-                self.admitirProcesos(lista_procesos, memoria)
-            sys.exit('No hay procesos para tratar.\nSaliendo...')              
-
+    def setTiTotal(self, lista_procesos):
+        for proceso in lista_procesos:
+            self.__tiTotal += proceso.getTi()
+    
+    def getTiTotal(self):
+        return self.__tiTotal
 
 
 class CortoPlazo():
