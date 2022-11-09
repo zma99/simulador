@@ -424,7 +424,11 @@ class LargoPlazo():
                 self.admitirProcesos(lista_procesos, memoria)
             sys.exit('No hay procesos para tratar.\nSaliendo...')    
 
+
+
     def crearListaProcesos(self, datos_procesos):
+        # Devuelve una lista de instancias de Proceso()
+        
         lista_procesos = list()
         for datos in datos_procesos:
             lista_procesos.append(self.nuevoProceso(datos))
@@ -432,6 +436,8 @@ class LargoPlazo():
         return lista_procesos
 
     def nuevoProceso(self, datos):
+        # Crea y retorna una instancia de la clase Proceso
+
         nuevo_proc = Proceso(
             datos[0], # ID
             datos[1], # TA
@@ -444,7 +450,10 @@ class LargoPlazo():
     def admitirProcesos(self, lista_procesos, memoria):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
-        listos = list()
+
+        # Se ordena por tiempo de arribo (TA)
+        lista_procesos = sorted(lista_procesos, key=lambda proceso : proceso.getTa())
+
         asignados = 0
         while len(lista_procesos) > 0:
             if memoria.libre():
@@ -452,18 +461,9 @@ class LargoPlazo():
                     try:
                         memoria.worstfit(lista_procesos)
                         asignados += 1
-                        # if memoria.worstfit(lista_procesos):
-                        #     asignados += 1
-                        # else:
-                        #     listos = memoria.procAsignados()
-                        #     print(listos)
-                        #     #for proceso in listos:
-                        #     print(f'\nEjecutando proceso ID={listos[0]}')
-                        #     memoria
-                        #     listos.pop(0)
-                        #     asignados -= 1
                     except ValueError:
                         print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
+                print('Cola de listos:', memoria.procAsignados())
                 sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
          
 
