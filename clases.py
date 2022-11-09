@@ -62,6 +62,84 @@ class Menu():
             print(f'{item}) {self.opciones[item]}')
 
 
+    def cargaManual(self):
+        # Devuelve lista con datos de procesos
+
+        datos_procesos = self.pedirDatos()
+
+        print(datos_procesos)
+
+        os.system('pause')
+        
+
+        return datos_procesos
+
+
+    def pedirDatos(self):
+        datos_procesos = list()
+        datos_procesos.append(['ID','TA','TI','TAM (KB)'])
+
+        print('Ingrese datos del proceso. Recuerde que deben ser números eneteros. Ingrese -1 en cualquier momento para salir.\n')
+        while True:
+            id = self.ingresarDato('ID')
+            ta = self.ingresarDato('TA')
+            ti = self.ingresarDato('TI')
+            tam = self.ingresarDato('TAM')
+            datos_procesos.append([id,ta,ti,tam])
+            print('\nIngrese "s" para seguir cargando procesos o cualquier otra tecla para finlizar.')
+            seguir = input('> ')
+            if seguir != 's':
+                break
+
+        return datos_procesos
+
+
+                    
+            
+    def ingresarDato(self, nom_dato):
+        nom_dato = nom_dato.upper()
+        dato = 0
+        if nom_dato != 'TAM':
+            while True:
+                dato = input(nom_dato + ' = ')
+                if self.validarEntero(dato):
+                    dato = int(dato)
+                    return dato
+                print('\nIntente de nuevo...\n') 
+        else:
+            while True:
+                dato = input(nom_dato + ' = ')
+                if self.validarTam(dato):
+                    dato = int(dato)
+                    return dato
+                print('\nIntente de nuevo...\n')
+
+            
+    
+    
+    def validarEntero(self, dato):
+        if dato == '-1':
+            sys.exit('Saliendo...')
+        if not dato.isdigit() or dato == 0:
+            return False
+        return True
+
+    def validarTam(self, tam):
+        while True:
+            if tam == '-1':
+                sys.exit('Saliendo...')
+
+            if not tam.isdigit() or tam == 0:
+                return False
+            
+            tam = int(tam)
+            if tam > 250:
+                print('\nEl tamaño del proceso no puede exceder de 250 KB.\n')
+                return False
+            
+            return True
+
+
     def cargarArchivo(self, nombre_archivo):
         datos_procesos = list()
         lista_temp = list()
@@ -113,31 +191,32 @@ class Menu():
             try:
                 opc = int(input('\n> '))
                 if opc == 1:
-                    pass
+                    return self.cargaManual()
                 elif opc == 2:
                     return self.cargarArchivo('procesos_precargados.txt')
                 elif opc == 3:
-                    encabezados = ['Autor', 'Rol']
-                    autores = [
-                        ['MASS Matias', ''],
-                        ['ROMERO Sebastián',''],
-                        ['SCHEFER Mauricio',''],
-                        ['ZANAZZO M. Alan','']
-                    ]
-                    info = Tabla('', encabezados, autores)
-                    print('Simulador de planificación de CPU y asignación de memoria')
-                    print('Versión 1.0')
-                    print('Sistemas Operativos')
-                    print('Ingeniería en Sistemas de Información')
-                    print('Universidad Tecnológica Nacional - Facultad Regional Resistencia')
-                    info.construir()
-                    return exit()
+                    self.autores()
                 else:
                     pass
             except ValueError:
                 print('Debe ingresar una opción válida. Verifica que sea un número entero.')
 
-
+    def autores(self):
+        encabezados = ['Autor', 'Rol']
+        autores = [
+            ['MASS Matias', ''],
+            ['ROMERO Sebastián',''],
+            ['SCHEFER Mauricio',''],
+            ['ZANAZZO M. Alan','']
+        ]
+        info = Tabla('', encabezados, autores)
+        print('Simulador de planificación de CPU y asignación de memoria')
+        print('Versión 1.0')
+        print('Sistemas Operativos')
+        print('Ingeniería en Sistemas de Información')
+        print('Universidad Tecnológica Nacional - Facultad Regional Resistencia')
+        info.construir()
+        return exit()
 
 class Tabla():
     def __init__(self, id, encabezados, datos):
@@ -284,7 +363,7 @@ class Memoria():
         # Recibe lista de procesos para asignar a particiones libres
         # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
-        if part != 0:
+        if part != 0 and len(lista_procesos) != 0:
             part.setProcAsignado(lista_procesos.pop(0).getId())
             print('Proceso asignado')
             return True
