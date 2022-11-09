@@ -62,7 +62,7 @@ class Menu():
             print(f'{item}) {self.opciones[item]}')
 
 
-    def cargar_archivo(self, nombre_archivo):
+    def cargarArchivo(self, nombre_archivo):
         datos_procesos = list()
         lista_temp = list()
         print(f'Abriendo fichero: "{nombre_archivo}"')
@@ -77,25 +77,15 @@ class Menu():
         # Validación de datos de procesos
         # devuelve lista de lista con datos de procesos (datos_procesos)
         
-        for i in range(0, len(lista_temp)):
+        for i in range(1, len(lista_temp)):
             elem_formateados = list()
             elem = lista_temp[i]
             for j in range(0, len(elem)):
                 temp = elem[j]
-                if temp.isdigit():
+                if i == 0 or temp.isdigit():
                     elem_formateados.append(int(temp))
                 else:
-                    try:
-                        float(temp)
-                        print('No se permiten números flotantes en los datos de los procesos.')
-                        print('Verifique los datos en el archivo, deben respetar el formato establecido en la documentación.')
-                        print('Una vez corrija el(los) error(es), vualva a ejecutar el programa.')
-                        sys.exit()
-                    except ValueError:
-                        if i==0:
-                            elem_formateados.append(temp)
-                        else:
-                            sys.exit('\nRevise los datos de los procesos, deben ser números enteros para ID, TA, TI y TAM.\n\nSaliendo...')
+                    sys.exit('\nRevise los datos de los procesos, deben ser números enteros para ID, TA, TI y TAM.\n\nSaliendo...')
 
             datos_procesos.append(elem_formateados)
 
@@ -125,7 +115,7 @@ class Menu():
                 if opc == 1:
                     pass
                 elif opc == 2:
-                    return self.cargar_archivo('procesos_precargados.txt')
+                    return self.cargarArchivo('procesos_precargados.txt')
                 elif opc == 3:
                     encabezados = ['Autor', 'Rol']
                     autores = [
@@ -269,12 +259,7 @@ class Memoria():
             
             if i == 0:
                 nueva_particion.setSO(True)
-            # print('Se creó una partición nueva')
-            # print(f'id = {nueva_particion.getId()}')
-            # print(f'Dir de inicio = {nueva_particion.getDirInicio()}')
-            # print(f'Tamaño = {nueva_particion.getTam()} KB')
-            # print(f'Proceso asignado = {nueva_particion.getProcAsignado()}')
-            # print(f'fragmentación = {nueva_particion.getFragmentacion()}\n')
+                
             ult_dir += nueva_particion.getTam() + 1
             lista_particiones.append(nueva_particion)
         self.__particiones = lista_particiones
@@ -334,6 +319,8 @@ class Memoria():
 
 
     def procAsignados(self):
+        # Retorna lista con ID de procesos asignados a una partición
+
         listos = list()
         for part in self.__particiones:
             if not part.getSO():
