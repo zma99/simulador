@@ -225,8 +225,8 @@ class Proceso():
         self.__ubi = ubi
 
     def __str__(self):
-        return str(self.__id)
-
+        salida = f'[ID={self.__id}, TA={self.__ta}, TI={self.__ti}, TAM={self.__tam} KB]\n'
+        return salida
 
 
 class Cpu():
