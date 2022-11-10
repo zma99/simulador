@@ -14,17 +14,15 @@ if __name__ == '__main__':
     menu = Menu(OPCIONES_MENU)
     menu.mostrar()
     datos_procesos = menu.capturar()
+    titulo = 'Planificación de procesos:'
     encabezados = datos_procesos.pop(0)
-    tabla_planificacion = Tabla('1', encabezados, datos_procesos)
+    tabla_planificacion = Tabla(titulo, encabezados, datos_procesos)
     ventana.limpiar()
-    print('Planificación de procesos:')
     tabla_planificacion.construir()
 
     # Praparando memoria
     datos_particiones = [100,250,120,60]
-    #print(f'Las particiones se crearán con los siguiente datos: {datos_particiones}\n\n')
     memo = Memoria(datos_particiones)
-    #print(memo.particiones[0].getId())
 
     datos_particiones = list()
 
@@ -35,9 +33,9 @@ if __name__ == '__main__':
         particion.append(part.getTam())
         datos_particiones.append(particion)
 
+    titulo = '\nDistribución de particiones en MP:'
     encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
-    monitor_memo = Tabla('monitor_memo', encabezados, datos_particiones)
-    print('\nDistribución de particiones en MP:')
+    monitor_memo = Tabla(titulo, encabezados, datos_particiones)
     monitor_memo.construir()
 
 

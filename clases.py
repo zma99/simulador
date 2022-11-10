@@ -228,13 +228,13 @@ class Menu():
 
 
 class Tabla():
-    def __init__(self, id, encabezados, datos):
-        self.__id = id                        # un identificador
+    def __init__(self, titulo, encabezados, datos):
+        self.__titulo = titulo                # titulo a mostrar
         self.__encabezados = encabezados      # list of strings: [ 'fila 1 col 1', 'fila 1 col 2', ... , 'fila 1 col N' ]
         self.__datos = datos                  # list of list: [ [datos fila 1], [ datos fila dos ], ... , [datos fila N] ]
 
-    def getId(self):
-        return self.__id
+    def getTitulo(self):
+        return self.__titulo
 
     def getEncabezados(self):
         return self.__encabezados
@@ -242,8 +242,8 @@ class Tabla():
     def getDatos(self):
         return self.__datos
 
-    def setId(self, id):
-        self.__id = id
+    def setTitulo(self, titulo):
+        self.__titulo = titulo
 
     def setEncabezados(self, lista_encabezados):
         self.__encabezados = lista_encabezados
@@ -254,6 +254,7 @@ class Tabla():
 
     def construir(self):
         # 'tabulate' permite imprimir datos en formato de tabla muy fácil
+        print(self.__titulo)
         print(tabulate(self.__datos, headers=self.__encabezados, tablefmt='fancy_grid'))
 
 
@@ -486,6 +487,8 @@ class LargoPlazo():
     def __init__(self, multiprog=5):
         self.__multiprog = multiprog
         self.__tiTotal = 0
+        listos = list()
+        suspendidos = list()
 
     def getMultiprog(self):
         return self.__multiprog

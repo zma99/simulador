@@ -24,6 +24,3 @@
     #     cont = cont + 1
     #     """
 
-
-from clases import Proceso
-
