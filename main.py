@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 from clases import *
 
@@ -38,6 +39,11 @@ if __name__ == '__main__':
     monitor_memo = Tabla(titulo, encabezados, datos_particiones)
     monitor_memo.construir()
 
+=======
+from interfaz import *
+
+#mauri
+>>>>>>> 7137fcc79d475e0ac76a14cbc0447bd809c30a2b
 
     print('Cantidad de particiones: ', memo.getCantPart())
     print(f'Tamaño total de la memoria: {memo.getTam()} KB')
