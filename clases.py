@@ -361,6 +361,9 @@ class MMU():
         return self.__memo.worstfit(lista_procesos)
 
     def procAsignados(self):
+        # retorna lista con id de procesos asignados a las particiones
+        # partición: [SO, p1, p2, p3] -> devuelve [id_proc_1,  id_proc_2, id_proc_3]
+        # si todas las partición son ocupadas por procesos excepto la partición SO
         return self.__memo.procAsignados()
 
 
@@ -454,7 +457,7 @@ class Memoria():
 
     def procAsignados(self):
         # Retorna lista con ID de procesos asignados a una partición
-
+        #
         listos = list()
         for part in self.__particiones:
             if not part.getSO():
