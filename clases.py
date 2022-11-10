@@ -204,6 +204,8 @@ class Menu():
                     return self.cargarArchivo('procesos_precargados.txt')
                 elif opc == 3:
                     self.autores()
+                elif opc == 4:
+                    sys.exit('Saliendo...')
                 else:
                     pass
             except ValueError:
@@ -311,7 +313,6 @@ class Proceso():
     def __repr__(self):
         return f'\n id de proceso {self.__id} Tiempo de Arribo {self.__ta} Tiempo de irrupcion {self.__ti} Tamaño {self.__tam} '
 
-    
 
 
 class Cpu():
@@ -323,6 +324,44 @@ class Cpu():
 
     def setReloj(self, reloj):
         self.__reloj = reloj
+
+class MMU():
+    def __init__(self, datos_particiones):
+        self.__memo = Memoria(datos_particiones)
+
+    def getParticiones(self):
+        return self.__memo.getParticiones()
+
+    def getDistribucion(self):
+        datos_particiones = list()
+        for part in self.getParticiones():
+            particion = list()
+            particion.append(part.getId())
+            particion.append(part.getDirInicio())
+            particion.append(part.getTam())
+            datos_particiones.append(particion)
+
+        titulo = '\nDistribución de particiones en MP:'
+        encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
+        monitor_memo = Tabla(titulo, encabezados, datos_particiones)
+        monitor_memo.construir()
+        print('Cantidad de particiones: ', self.getCantPart())
+        print(f'Tamaño total de la memoria: {self.getTam()} KB')
+
+    def getCantPart(self):
+        return self.__memo.getCantPart()
+
+    def getTam(self):
+        return self.__memo.getTam()
+
+    def memorialibre(self):
+        return self.__memo.libre()
+
+    def worstfit(self, lista_procesos):
+        return self.__memo.worstfit(lista_procesos)
+
+    def procAsignados(self):
+        return self.__memo.procAsignados()
 
 
 class Memoria():
@@ -493,7 +532,7 @@ class LargoPlazo():
     def getMultiprog(self):
         return self.__multiprog
     
-    def llamar(self, datos_procesos, memoria):
+    def llamar(self, datos_procesos, mmu):
         # Ejecuta el planificador de SO a largo plazo
         # Toma los datos procesos validados y crea una instancia de Proceso
         # por cada uno, luego asigna a particiones disponibles
@@ -504,7 +543,7 @@ class LargoPlazo():
                 lista_procesos = self.crearListaProcesos(datos_procesos)
                 self.setTiTotal(lista_procesos)
                 print('\nTiempo de irrupción total: ',self.getTiTotal())
-                self.admitirProcesos(lista_procesos, memoria)
+                self.admitirProcesos(lista_procesos, mmu)
             sys.exit('No hay procesos para tratar.\nSaliendo...')    
 
 
@@ -530,7 +569,7 @@ class LargoPlazo():
         return nuevo_proc
 
     
-    def admitirProcesos(self, lista_procesos, memoria):
+    def admitirProcesos(self, lista_procesos, mmu):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
 
@@ -544,14 +583,14 @@ class LargoPlazo():
 
         asignados = 0
         while len(lista_procesos) > 0:
-            if memoria.libre():
+            if mmu.memorialibre():
                 while asignados < self.getMultiprog():
                     try:
-                        memoria.worstfit(lista_procesos)
+                        mmu.worstfit(lista_procesos)
                         asignados += 1
                     except ValueError:
                         print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
-                print('Cola de listos:', memoria.procAsignados())
+                print('Cola de listos:', mmu.procAsignados())
                 sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
          
 

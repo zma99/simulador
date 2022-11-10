@@ -22,27 +22,10 @@ if __name__ == '__main__':
 
     # Praparando memoria
     datos_particiones = [100,250,120,60]
-    memo = Memoria(datos_particiones)
-
-    datos_particiones = list()
-
-    for part in memo.getParticiones():
-        particion = list()
-        particion.append(part.getId())
-        particion.append(part.getDirInicio())
-        particion.append(part.getTam())
-        datos_particiones.append(particion)
-
-    titulo = '\nDistribución de particiones en MP:'
-    encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
-    monitor_memo = Tabla(titulo, encabezados, datos_particiones)
-    monitor_memo.construir()
-
-
-    print('Cantidad de particiones: ', memo.getCantPart())
-    print(f'Tamaño total de la memoria: {memo.getTam()} KB')
+    mmu = MMU(datos_particiones)
+    mmu.getDistribucion()
 
     ventana.esperar()
     ventana.limpiar()
     p_largo = LargoPlazo()
-    p_largo.llamar(datos_procesos, memo)
+    p_largo.llamar(datos_procesos, mmu)
