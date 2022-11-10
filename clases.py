@@ -4,6 +4,17 @@ from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
 
+class list(list):
+    def __init__(self):
+        super().__init__(self)
+
+    def ordenar(self, criterio):
+        if criterio.upper() == 'TA':
+            self.sort(key=lambda x : x.getTa())
+        if criterio.upper() == 'TI':
+            self.sort(key=lambda x : x.getTi())
+
+
 class Simulador():
     def __init__(self):
         self.__reloj = 0
@@ -23,8 +34,6 @@ class Simulador():
 
     def contar(self):
         self.__reloj += 1
-
-            
 
 
 class Consola():
@@ -48,7 +57,6 @@ class Consola():
         self.limpiar()
         os.system('TITLE Simulador')
         os.system(f'MODE con:cols={columnas}')
-
 
 
 class Menu(): 
@@ -218,6 +226,7 @@ class Menu():
         info.construir()
         return exit()
 
+
 class Tabla():
     def __init__(self, id, encabezados, datos):
         self.__id = id                        # un identificador
@@ -296,6 +305,12 @@ class Proceso():
     def __str__(self):
         salida = f'[ID={self.__id}, TA={self.__ta}, TI={self.__ti}, TAM={self.__tam} KB]\n'
         return salida
+
+
+    def __repr__(self):
+        return f'\n id de proceso {self.__id} Tiempo de Arribo {self.__ta} Tiempo de irrupcion {self.__ti} Tamaño {self.__tam} '
+
+    
 
 
 class Cpu():
@@ -467,7 +482,6 @@ class Particion():
         return False
 
 
-
 class LargoPlazo():
     def __init__(self, multiprog=5):
         self.__multiprog = multiprog
@@ -518,7 +532,12 @@ class LargoPlazo():
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
 
         # Se ordena por tiempo de arribo (TA)
-        lista_procesos = sorted(lista_procesos, key=lambda proceso : proceso.getTa())
+        #lista_procesos = sorted(lista_procesos, key=lambda proceso : proceso.getTa())
+        #print(lista_procesos)
+        lista_procesos.ordenar('TA')
+        #print(lista_procesos)
+
+        #sys.exit('...')
 
         asignados = 0
         while len(lista_procesos) > 0:

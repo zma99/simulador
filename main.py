@@ -10,7 +10,7 @@ OPCIONES_MENU ={
 
 if __name__ == '__main__':
     ventana = Consola()
-    #ventana.limpiar()
+    ventana.limpiar()
     menu = Menu(OPCIONES_MENU)
     menu.mostrar()
     datos_procesos = menu.capturar()
