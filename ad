@@ -1,0 +1,29 @@
+[33m5596c88[m[33m ([m[1;36mHEAD -> [m[1;32mmauri[m[33m, [m[1;31morigin/mauri[m[33m)[m Probar
+[33m0cab020[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m agregando cosas al planificador de corto plazo
+[33m5549a69[m Nueva clase: MMU maneja la memoria
+[33mea7954e[m hola
+[33mfc7b092[m[33m ([m[1;31morigin/alan[m[33m)[m Cambio en Table y ejemplo monitor de estados
+[33m8b7d23f[m Método ordenar listas de procesos según criterio TA o TI
+[33m260a408[m Se agregó carga manual con validación de datos
+[33mceb0622[m Arreglado validacion de datos de procesos del txt
+[33ma22b1bb[m Mejorado __str__ de Proceso()
+[33m9c6609e[m Lista de procesos se ordena por TA antes de admitir
+[33me4e1721[m Mejorado abstraccion en metodo llamar del Planif. LP
+[33m5b30ad9[m se agrego clase simulador, test.py, revisar comando para linux
+[33m96c2ead[m Correcion: Procesos con TAM mayor a 250
+[33ma315dfc[m Limpiando repo
+[33m424301a[m Limpiando
+[33m6539c01[m Lista de requerimientos
+[33m77a612a[m Mejorado: encapsulamiento de objetos
+[33mb2b6c2d[m Corregido carga de datos tipo str en archivo de procesos
+[33me2ea74e[m Asignacion de procesos por worst-fit
+[33m501fd73[m asignacion de procesos por worstfit
+[33mc9182df[m Validadción procesos repetidos en archivo
+[33mfe52c4e[m se agregó método para consulta de memoria libre
+[33m5bdcf21[m Modif Menu,Consola. Se pueden crear particiones. En main todo el code
+[33m7137fcc[m configurando
+[33mf3f2ffa[m configurando
+[33m707c5a4[m Arreglado id, tim, tam deben ser enteros
+[33m2a4c24e[m Arreglado id, tim, tam deben ser enteros
+[33m3f9fa9c[m Arreglando entrada manual y por archivo
+[33m8b2da3b[m primer commit

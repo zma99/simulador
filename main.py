@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 from clases import *
 
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 
     # Praparando memoria
     datos_particiones = [100,250,120,60]
-<<<<<<< HEAD
+
     memo = Memoria(datos_particiones)
 
     datos_particiones = list()
@@ -39,21 +39,15 @@ if __name__ == '__main__':
     encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
     monitor_memo = Tabla(titulo, encabezados, datos_particiones)
     monitor_memo.construir()
-
-=======
 from interfaz import *
 
 #mauri
->>>>>>> 7137fcc79d475e0ac76a14cbc0447bd809c30a2b
+print('Cantidad de particiones: ', memo.getCantPart())
+print(f'Tamaño total de la memoria: {memo.getTam()} KB')
+mmu = MMU(datos_particiones)
+mmu.getDistribucion()
 
-    print('Cantidad de particiones: ', memo.getCantPart())
-    print(f'Tamaño total de la memoria: {memo.getTam()} KB')
-=======
-    mmu = MMU(datos_particiones)
-    mmu.getDistribucion()
->>>>>>> master
-
-    ventana.esperar()
-    ventana.limpiar()
-    p_largo = LargoPlazo()
-    p_largo.llamar(datos_procesos, mmu)
+ventana.esperar()
+ventana.limpiar()
+p_largo = LargoPlazo()
+p_largo.llamar(datos_procesos, mmu)
