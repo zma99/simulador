@@ -3,7 +3,6 @@ import sys
 from sys import platform
 from tabulate import tabulate # Es necesario instalar
 
-
 class list(list):
     def __init__(self):
         super().__init__(self)
