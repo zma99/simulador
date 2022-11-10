@@ -370,7 +370,7 @@ class MMU():
         titulo = '\nMemoria Principal:'
         encabezados = ['ID Part', 'Direccion', 'Tamaño (KB)', 'ID Proc', 'Fragmentacion']
         monitor_memoria = Tabla(titulo, encabezados, datos_particiones)
-        monitor_memoria.construir() 
+        monitor_memoria.construir()
 
 class Memoria():
     # Representa memoria principal de un sistema de cómputo
