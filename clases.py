@@ -59,6 +59,7 @@ class Consola():
         os.system(f'MODE con:cols={columnas}')
 
 
+
 class Menu(): 
     def __init__(self, opciones):
         # opciones debe ser un diccionario
@@ -366,6 +367,11 @@ class MMU():
         # si todas las partición son ocupadas por procesos excepto la partición SO
         return self.__memo.procAsignados()
 
+    def mostrarMemoria(self, datos_particiones):
+        titulo = '\nMemoria Principal:'
+        encabezados = ['ID Part', 'Direccion', 'Tamaño (KB)', 'ID Proc', 'Fragmentacion']
+        monitor_memoria = Tabla(titulo, encabezados, datos_particiones)
+        monitor_memoria.construir() 
 
 class Memoria():
     # Representa memoria principal de un sistema de cómputo
