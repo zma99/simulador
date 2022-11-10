@@ -23,6 +23,7 @@ if __name__ == '__main__':
 
     # Praparando memoria
     datos_particiones = [100,250,120,60]
+<<<<<<< HEAD
     memo = Memoria(datos_particiones)
 
     datos_particiones = list()
@@ -47,8 +48,12 @@ from interfaz import *
 
     print('Cantidad de particiones: ', memo.getCantPart())
     print(f'Tamaño total de la memoria: {memo.getTam()} KB')
+=======
+    mmu = MMU(datos_particiones)
+    mmu.getDistribucion()
+>>>>>>> master
 
     ventana.esperar()
     ventana.limpiar()
     p_largo = LargoPlazo()
-    p_largo.llamar(datos_procesos, memo)
+    p_largo.llamar(datos_procesos, mmu)
