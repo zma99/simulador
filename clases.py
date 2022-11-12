@@ -34,6 +34,8 @@ class Simulador():
     def contar(self):
         self.__reloj += 1
 
+    
+
 
 class Consola():
     #falta definir
@@ -56,6 +58,9 @@ class Consola():
         self.limpiar()
         os.system('TITLE Simulador')
         os.system(f'MODE con:cols={columnas}')
+
+    def monitor(self):
+        pass
 
 
 
@@ -534,8 +539,8 @@ class LargoPlazo():
     def __init__(self, multiprog=5):
         self.__multiprog = multiprog
         self.__tiTotal = 0
-        listos = list()
-        suspendidos = list()
+        self.__listos = list()
+        #suspendidos = list()
 
     def getMultiprog(self):
         return self.__multiprog
@@ -598,7 +603,8 @@ class LargoPlazo():
                         asignados += 1
                     except ValueError:
                         print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
-                print('Cola de listos:', mmu.procAsignados())
+                self.__listos = mmu.procAsignados()
+                print('Cola de listos:', self.__listos)
                 sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
          
 
