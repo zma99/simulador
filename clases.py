@@ -197,6 +197,8 @@ class Menu():
             if int(tam_proc) > 250:
                 sys.exit('\nERROR: Hay al menos un proceso de tamaño mayor a 250 KB y no es posible tratar. \n\nCorrija e intente de nuevo.')
 
+        # print(datos_procesos)
+        # os.system('pause')
         return datos_procesos
 
     def capturar(self):
@@ -316,7 +318,7 @@ class Proceso():
 
 
     def __repr__(self):
-        return f'\n id de proceso {self.__id} Tiempo de Arribo {self.__ta} Tiempo de irrupcion {self.__ti} Tamaño {self.__tam} '
+        return f'\n[ID={self.__id}, \tTA={self.__ta}, \tTI={self.__ti}, \tTAM={self.__tam} KB, \tEST={self.__est}]'
 
 
 
@@ -359,11 +361,11 @@ class MMU():
     def getTam(self):
         return self.__memo.getTam()
 
-    def memorialibre(self):
+    def memoriaLibre(self):
         return self.__memo.libre()
 
-    def worstfit(self, lista_procesos):
-        return self.__memo.worstfit(lista_procesos)
+    def worstfit(self, nuevos):
+        return self.__memo.worstfit(nuevos)
 
     def procAsignados(self):
         # retorna lista con id de procesos asignados a las particiones
@@ -376,6 +378,9 @@ class MMU():
         encabezados = ['ID Part', 'Direccion', 'Tamaño (KB)', 'ID Proc', 'Fragmentacion']
         monitor_memoria = Tabla(titulo, encabezados, datos_particiones)
         monitor_memoria.construir()
+
+    def cantProcAsignados(self):
+        return len(self.procAsignados())
 
 class Memoria():
     # Representa memoria principal de un sistema de cómputo
@@ -427,13 +432,14 @@ class Memoria():
         return tamanio
 
 
-    def worstfit(self, lista_procesos):
+    def worstfit(self, proceso):
         # Recibe lista de procesos para asignar a particiones libres
         # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
-        if part != 0 and len(lista_procesos) != 0:
-            part.setProcAsignado(lista_procesos.pop(0).getId())
+        if part != 0:
+            part.setProcAsignado(proceso.getId())
             print('Proceso asignado')
+            proceso.setEst('L')
             return True
         
         return False
@@ -441,14 +447,21 @@ class Memoria():
 
 
     def libre(self):
-        # Retorna una lista booleanos indicando si la partición está libre
-        # cada posición de la lista corresponde a una partición en el orden que 
-        # fueron creadas
+        # Retorna True si hay memoria disponible, de lo contrario False
+    
         part_libre = list()
         for part in self.__particiones:
+            # Crea una lista de booleanos indicando si la partición está libre
+            # cada posición de la lista corresponde a una partición en el orden que fueron creadas
             part_libre.append(part.libre())
 
-        return part_libre
+        if part_libre.count(True) > 0:
+            # Si hay al menos un elemento =True en part_libre
+            # significa que hay partición libre
+            # por tanto hay memoria disponible
+            return True
+
+        return False
 
 
     def partLibreMayor(self):
@@ -536,27 +549,75 @@ class Particion():
 
 
 class LargoPlazo():
-    def __init__(self, multiprog=5):
-        self.__multiprog = multiprog
-        self.__tiTotal = 0
-        self.__listos = list()
-        #suspendidos = list()
+    def __init__(self, mmu):
+        self.__multiprog = 5        # nivel de multiprogramación del sistema
+        self.__tiTotal = 0          # tiempo de irrupción total
+        self.__mmu = mmu            # módulo controlador de memoria
+        self.__nuevos = list()      # lista o cola de procesos nuevos que ingresan al sistema
+        self.__listos = list()      # lista o cola de procesos admitidos y cargados en memorias
+        self.__admitidos = list()   # lista o cola de procesos admitidos en el sistema
 
     def getMultiprog(self):
         return self.__multiprog
     
-    def llamar(self, datos_procesos, mmu):
+    def getTiTotal(self):
+        return self.__tiTotal
+
+    def getMMU(self):
+        return self.__mmu
+
+    def getNuevos(self):
+        return self.__nuevos
+
+    def getListos(self):
+        return self.__listos
+
+    def getAdmitidos(self):
+        return self.__admitidos
+
+    def setMultiprog(self, multiprog):
+        self.__multiprog = multiprog
+
+    def setTiTotal(self):
+        for proceso in self.__nuevos:
+            self.__tiTotal += proceso.getTi()
+
+    def setMMU(self, MMU):
+        self.__mmu = MMU
+
+    def setListos(self, lista_procesos):
+        self.__listos = lista_procesos
+
+    def setAdmitidos(self, lista_procesos):
+        self.__admitidos = lista_procesos
+
+    def setNuevos(self, lista_procesos):
+        self.__nuevos = lista_procesos
+
+    def addNuevos(self, proceso):
+        self.__nuevos.append(proceso)
+
+    def addListos(self, proceso):
+        self.__listos.append(proceso)
+
+    def addAdmitidos(self, proceso):
+        self.__admitidos.append(proceso)
+
+    def cantAdmitidos(self):
+        return len(self.__admitidos)
+
+    def ejecutar(self, datos_procesos):
         # Ejecuta el planificador de SO a largo plazo
         # Toma los datos procesos validados y crea una instancia de Proceso
         # por cada uno, luego asigna a particiones disponibles
 
-        lista_procesos = list()
         while True:
             if not datos_procesos is None:
-                lista_procesos = self.crearListaProcesos(datos_procesos)
-                self.setTiTotal(lista_procesos)
-                print('\nTiempo de irrupción total: ',self.getTiTotal())
-                self.admitirProcesos(lista_procesos, mmu)
+                self.crearListaProcesos(datos_procesos)
+                self.setTiTotal()
+                print('\nTiempo de irrupción total: ', self.getTiTotal())
+                self.admitirProcesos()
+                break
             sys.exit('No hay procesos para tratar.\nSaliendo...')    
 
 
@@ -564,11 +625,9 @@ class LargoPlazo():
     def crearListaProcesos(self, datos_procesos):
         # Devuelve una lista de instancias de Proceso()
         
-        lista_procesos = list()
+        #nuevos = list()
         for datos in datos_procesos:
-            lista_procesos.append(self.nuevoProceso(datos))
-        
-        return lista_procesos
+            self.__nuevos.append(self.nuevoProceso(datos))
 
     def nuevoProceso(self, datos):
         # Crea y retorna una instancia de la clase Proceso
@@ -581,39 +640,57 @@ class LargoPlazo():
         )
         return nuevo_proc
 
+    def ingresanProc(self):
+        if len(self.__nuevos) > 0:
+            return True
+        else:
+            return False
+        
+
     
-    def admitirProcesos(self, lista_procesos, mmu):
+    def admitirProcesos(self):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
 
         # Se ordena por tiempo de arribo (TA)
-        #lista_procesos = sorted(lista_procesos, key=lambda proceso : proceso.getTa())
-        #print(lista_procesos)
-        lista_procesos.ordenar('TA')
-        #print(lista_procesos)
+        #print('Cola de nuevo sin ordenar:', self.__nuevos)
+        self.__nuevos.ordenar('TA')
+        # print('Cola de nuevo ordenada:', self.__nuevos)
+        # os.system('pause')
 
-        #sys.exit('...')
+        while self.ingresanProc() and self.cantAdmitidos() < self.__multiprog:
+            proceso = self.__nuevos.pop(0)  # Se toma un proceso de la cola de nuevos
+            if self.__mmu.memoriaLibre():   # Se consulta si hay memoria disponible
+                # Si hay memoria el mmu se encarga
+                try:
+                    self.__mmu.worstfit(proceso) 
+                    self.__listos.append(proceso)
+                except ValueError:
+                    print('Algo salió mal en la admisión del proceso')
+            else:
+                # Sino no hay memoria el proceso se suspende (pasa a disco)
+                proceso.setEst('S')
 
-        asignados = 0
-        while len(lista_procesos) > 0:
-            if mmu.memorialibre():
-                while asignados < self.getMultiprog():
-                    try:
-                        mmu.worstfit(lista_procesos)
-                        asignados += 1
-                    except ValueError:
-                        print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
-                self.__listos = mmu.procAsignados()
-                print('Cola de listos:', self.__listos)
-                sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
+            self.__admitidos.append(proceso)    # Se agrega el proceso a cola de admitidos
+
+
+
+        # admitidos = 0
+        # while len(self.__nuevos) > 0:
+        #     while admitidos < self.getMultiprog():
+        #         while self.__mmu.memorialibre():
+        #             try:
+        #                 self.__mmu.worstfit(nuevos)
+        #                 admitidos = self.__mmu.cantProcAsignados()
+        #             except ValueError:
+        #                 print('ALGO SALIO MAL EN LA ASIGANACIPON DE MEMORIA')
+                
+        #     self.__listos = self.__mmu.procAsignados()
+        #     print('Cola de listos:', self.__listos)
+        #     sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
          
 
-    def setTiTotal(self, lista_procesos):
-        for proceso in lista_procesos:
-            self.__tiTotal += proceso.getTi()
-    
-    def getTiTotal(self):
-        return self.__tiTotal
+
 
 
 class CortoPlazo():

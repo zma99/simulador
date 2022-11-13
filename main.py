@@ -15,7 +15,7 @@ if __name__ == '__main__':
     menu.mostrar()
     datos_procesos = menu.capturar()
     titulo = 'Planificación de procesos:'
-    encabezados = datos_procesos.pop(0)
+    encabezados = ['ID', 'TA', 'TI', 'TAM']
     tabla_planificacion = Tabla(titulo, encabezados, datos_procesos)
     ventana.limpiar()
     tabla_planificacion.construir()
@@ -27,5 +27,14 @@ if __name__ == '__main__':
 
     ventana.esperar()
     ventana.limpiar()
-    p_largo = LargoPlazo()
-    p_largo.llamar(datos_procesos, mmu)
+
+    # Iniciando planificador a largo plazo
+    PLP = LargoPlazo(mmu)
+    PLP.ejecutar(datos_procesos)
+
+    ventana.esperar()
+    ventana.limpiar()
+    print('Acá terminó la ejecución del PLP.')
+    print('\nCola de nuevos: ', PLP.getNuevos())
+    print('\nCola de admitidos: ', PLP.getAdmitidos())
+    print('\nCola de listos: ', PLP.getListos())
