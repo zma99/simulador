@@ -71,6 +71,11 @@ class LargoPlazo(object):
                 self.crearListaProcesos(datos_procesos)
                 self.setTiTotal()
                 print('\nTiempo de irrupción total: ', self.getTiTotal())
+                # Se ordena por tiempo de arribo (TA)
+                #print('Cola de nuevo sin ordenar:', self.__nuevos)
+                self.__nuevos.ordenar('TA')
+                # print('Cola de nuevo ordenada:', self.__nuevos)
+                # os.system('pause')
                 self.admitirProcesos()
                 break
             sys.exit('No hay procesos para tratar.\nSaliendo...')    
@@ -107,11 +112,6 @@ class LargoPlazo(object):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
 
-        # Se ordena por tiempo de arribo (TA)
-        #print('Cola de nuevo sin ordenar:', self.__nuevos)
-        self.__nuevos.ordenar('TA')
-        # print('Cola de nuevo ordenada:', self.__nuevos)
-        # os.system('pause')
 
         while self.ingresanProc() and self.cantAdmitidos() < self.__multiprog:
             proceso = self.__nuevos.pop(0)  # Se toma un proceso de la cola de nuevos
@@ -145,3 +145,10 @@ class LargoPlazo(object):
         #     sys.exit('\nMEMORIA LLENA\n\nSaliendo...')
          
 
+    def verificar(self, reloj):
+        for proceso in self.__nuevos:
+            if proceso.getTa() == reloj:
+                #self.admitirProcesos()
+                return True
+
+        return False

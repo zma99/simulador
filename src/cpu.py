@@ -1,3 +1,5 @@
+import os
+
 class Cpu(object):
     def __init__(self, id):
         self.__id = id
@@ -22,15 +24,23 @@ class Cpu(object):
     def setTi(self, ti):
         self.__ti = ti
 
-    def ejecutar(self, proceso):
+    # def ejecutar(self, proceso):
+    #     self.__proceso = proceso
+    #     self.__ti = proceso.getTi()
+    #     print(f'EJECTUANDO PROCESO: {self.__proceso}\n')
+    #     while self.__ti != 0:
+    #         print('TI actual: ', self.__ti)
+    #         self.__ti -= 1
+    #         os.system('pause > nul')
+
+    #     print('*'*30)
+    #     print('\nFIN DE LA EJECUCIÓN')
+
+    def ejectuar(self):
+        self.__ti -= 1
+
+
+    def asignar(self, proceso):
         self.__proceso = proceso
         self.__ti = proceso.getTi()
-        print(f'EJECTUANDO PROCESO: {self.__proceso}\n')
-        while self.__ti != 0:
-            print('TI actual: ', self.__ti)
-            self.__ti -= 1
-
-        print('*'*30)
-        print('\nFIN DE LA EJECUCIÓN')
-
 
