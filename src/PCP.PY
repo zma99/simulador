@@ -28,7 +28,8 @@ class CortoPlazo(object):
         self.__esperando.ordenar('TI')
 
     def dispatcher(self):
-        self.__cpu.asignar(self.__esperando.pop(0))
+        if self.__esperando:
+            self.__cpu.asignar(self.__esperando.pop(0))
         
 
     def ejectuar(self):

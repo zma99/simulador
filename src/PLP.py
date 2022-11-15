@@ -12,6 +12,9 @@ class LargoPlazo(object):
         self.__listos = list()      # lista o cola de procesos admitidos y cargados en memorias
         self.__admitidos = list()   # lista o cola de procesos admitidos en el sistema
 
+    def getAdmitidosEn(self, ubi):
+        pass
+
     def getMultiprog(self):
         return self.__multiprog
     
@@ -152,3 +155,6 @@ class LargoPlazo(object):
                 return True
 
         return False
+
+    def admitir(self):
+        pass
