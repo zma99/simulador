@@ -36,7 +36,7 @@ class Cpu(object):
     #     print('*'*30)
     #     print('\nFIN DE LA EJECUCIÓN')
 
-    def ejectuar(self):
+    def ejecutar(self):
         self.__ti -= 1
 
 

@@ -5,6 +5,7 @@ from src.tabla import Tabla
 from src.memoria import MMU
 from src.PLP import LargoPlazo
 from src.PCP import CortoPlazo
+from src.PMP import MedioPlazo
 from src.cpu import Cpu
 
 
@@ -59,9 +60,9 @@ if __name__ == '__main__':
     ti_total = PLP.getTiTotal()
     reloj = 0
     while reloj != ti_total:
-        if PLP.verifiar(reloj):  # Verifica si se puede admitir nuevo proceso
+        if PLP.verificar(reloj):  # Verifica si se puede admitir nuevo proceso
             PLP.admitir()
-            PMP.setSuspendidos(PLP.getAdmitidos('D'))
+            PMP.setSuspendidos(PLP.getAdmitidosEn('D'))
             PMP.swapping()
 
         PCP.ejectuar()  # ordena cola de espera (listos), utiliza dispatcher y asigna proceso a cpu
