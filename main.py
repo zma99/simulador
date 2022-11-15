@@ -4,6 +4,8 @@ from src.menu import Menu
 from src.tabla import Tabla
 from src.memoria import MMU
 from src.PLP import LargoPlazo
+from src.PCP import CortoPlazo
+from src.cpu import Cpu
 
 
 
@@ -44,3 +46,10 @@ if __name__ == '__main__':
     print('\nCola de nuevos: ', PLP.getNuevos())
     print('\nCola de admitidos: ', PLP.getAdmitidos())
     print('\nCola de listos: ', PLP.getListos())
+
+    # Iniciando planificador a corto plazo
+    ventana.limpiar()
+    cpu = Cpu(1)
+    cola_espera = PLP.getListos()
+    PCP = CortoPlazo(cpu, cola_espera)
+    PCP.ejectuar()

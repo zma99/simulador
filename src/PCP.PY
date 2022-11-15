@@ -1,48 +1,41 @@
+from src.lista import list
+
 class CortoPlazo(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, cpu=None, cola_espera=list()):
+        self.__cpu = cpu
+        self.__esperando = cola_espera
 
-    def get(self):
-        pass
+        if self.__cpu is None:
+            print('ATENCIÓN: No hay CPU para trabajar, se presentarán errores durante la ejecución.')
 
-    def SJF(self, lista):
-        pass
+        if self.__esperando == []:
+            print('ATENCIÓN: No hay procesos en cola de espera.')
+
+    def getCpu(self):
+        return self.__cpu
+
+    def getEsperando(self):
+        return self.__esperando
+
+    def setCpu(self, id_cpu):
+        self.__cpu = id_cpu
+
+    def setEsperando(self, lista_procesos):
+        self.__esperando = lista_procesos
+
+    def SJF(self):
+        self.__esperando.ordenar('TI')
 
     def dispatcher(self):
-        pass
+        self.__cpu.ejecutar(self.__esperando.pop(0))
+        
 
-    def algoritmoSRTF(self):
-        global cpu, listos
-        self.ordenarPorSJF() 
-        if not (cpu.proceso): #Agregamos el primer proceso de la cola de listos a la cpu si no hay en la cpu
-            if len(listos) >= 1:
-                cpu.agregarProceso(listos[0])
-                listos.pop(0)
-        else:
-            if len(listos) >= 1: #Si existe aunque sea un elemento de la cola de listos
-                if listos[0].getTI() < cpu.getProceso().getTI() - cpu.getTIactual(): #Nos fijamos si alguno tiene el tiempo de irrupción menor que lo que le falta al proceso para finalizar ejecutándose en el procesador
-                    self.dispatcher(listos[0])
-                        
-    def dispatcher(self, proceso):
-        global listos
-        cpu.proceso.asignarTI(cpu.getProceso().getTI() - cpu.getTIactual())
-        listos.append(cpu.getProceso())
-        cpu.agregarProceso(proceso)
-        listos.pop(0)
+    def ejectuar(self):
+        self.SJF()
+        self.dispatcher()
+        
 
-    def ordenarPorSJF(self):
-        global listos
-        listos.sort(key=lambda proceso: proceso.getTI(), reverse=False)
-
-    def quitarProcDeMem(self, idProceso):
-        global part1, part2, part3
-        if idProceso == part1.getIdProc():
-            part1.liberar()
-        if idProceso == part2.getIdProc():
-            part2.liberar()
-        if idProceso == part3.getIdProc():
-            part3.liberar()
-        print ("\t\t\t\t *** El proceso", idProceso, "sale de memoria ***")
+    
 
         
