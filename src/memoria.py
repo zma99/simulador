@@ -51,6 +51,12 @@ class MMU(object):
     def cantProcAsignados(self):
         return len(self.procAsignados())
 
+
+    def liberarParticion(self, proceso):
+        self.__memo.liberar(proceso)
+
+
+
 class Memoria():
     # Representa memoria principal de un sistema de cómputo
 
@@ -160,14 +166,21 @@ class Memoria():
         return listos
 
 
+    def liberar(self, proceso):
+        for part in self.__particiones:
+            if part.getProcAsignado() == proceso.getId():
+                part.limpiar()
+                print('Partición liberada')
+
+
 class Particion():
     # Representa un objeto de tipo partición de memoria
 
-    def __init__(self, id=None, dirInicio=0, tam=None, procAsignado=None, fragmentacion=None, so=False):
+    def __init__(self, id=None, dirInicio=0, tam=None, idProceso=None, fragmentacion=None, so=False):
         self.__id = id
         self.__dirInicio = dirInicio
         self.__tam = tam
-        self.__procAsignado = procAsignado
+        self.__procAsignado = idProceso
         self.__fragmentacion = fragmentacion
         self.__so = so
 
@@ -218,3 +231,6 @@ class Particion():
 
         return False
 
+    def limpiar(self):
+        self.__procAsignado = None
+        self.__fragmentacion = None

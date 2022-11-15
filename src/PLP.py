@@ -1,4 +1,5 @@
 import sys
+import os
 from .proceso import Proceso
 from .lista import list
 
@@ -12,8 +13,13 @@ class LargoPlazo(object):
         self.__listos = list()      # lista o cola de procesos admitidos y cargados en memorias
         self.__admitidos = list()   # lista o cola de procesos admitidos en el sistema
 
-    def getAdmitidosEn(self, ubi):
-        pass
+    def getAdmitidosEstado(self, estado):
+        suspendidos = list()
+        for proceso in self.__admitidos:
+            if proceso.getEst() == estado:
+                suspendidos.append(proceso)
+
+        return suspendidos
 
     def getMultiprog(self):
         return self.__multiprog
@@ -115,21 +121,30 @@ class LargoPlazo(object):
         # Recibe una lista de listas de procesos y memoria sobre la que va a trabajar,
         # Cada elemento de la lista tiene formato [ID,TA,TI,TAM]
 
-
+        proceso = self.__nuevos[0]
         while self.ingresanProc() and self.cantAdmitidos() < self.__multiprog:
-            proceso = self.__nuevos.pop(0)  # Se toma un proceso de la cola de nuevos
-            if self.__mmu.memoriaLibre():   # Se consulta si hay memoria disponible
-                # Si hay memoria el mmu se encarga
-                try:
-                    if self.__mmu.worstfit(proceso): 
-                        self.__listos.append(proceso)
-                except ValueError:
-                    print('Algo salió mal en la admisión del proceso')
+        #while self.cantAdmitidos() < self.__multiprog:
+            # Se toma un proceso de la cola de nuevos
+            if proceso.getTa() == 0:
+                if self.__mmu.memoriaLibre():   # Se consulta si hay memoria disponible
+                    # Si hay memoria el mmu se encarga
+                    try:
+                        if self.__mmu.worstfit(proceso): 
+                            self.__listos.append(proceso)
+                    except ValueError:
+                        print('Algo salió mal en la admisión del proceso')
+                else:
+                    # Sino no hay memoria el proceso se suspende (pasa a disco)
+                    proceso.setEst('S')
+                self.__admitidos.append(proceso)    # Se agrega el proceso a cola de admitidos
+                self.__nuevos.pop(0)
+                proceso = self.__nuevos[0]
             else:
-                # Sino no hay memoria el proceso se suspende (pasa a disco)
-                proceso.setEst('S')
-
-            self.__admitidos.append(proceso)    # Se agrega el proceso a cola de admitidos
+                print('Se devolvió el proceso a cola de nuevos')
+                #self.__nuevos.insert(0, proceso)
+                print(self.__nuevos)
+                break
+                
 
 
 
@@ -157,4 +172,7 @@ class LargoPlazo(object):
         return False
 
     def admitir(self):
-        pass
+        if self.__nuevos and self.cantAdmitidos() < self.__multiprog:
+            proceso = self.__nuevos.pop(0)
+            proceso.setEst('S')
+            self.__admitidos.append(proceso)

@@ -37,10 +37,14 @@ class Cpu(object):
     #     print('\nFIN DE LA EJECUCIÓN')
 
     def ejecutar(self):
+        print(f'EJECTUANDO PROCESO: {self.__proceso}\nTI Cpu: { self.__ti}')
         self.__ti -= 1
 
 
     def asignar(self, proceso):
         self.__proceso = proceso
         self.__ti = proceso.getTi()
+
+    def liberar(self):
+        self.__proceso = None
 

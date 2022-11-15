@@ -55,27 +55,40 @@ if __name__ == '__main__':
     cola_espera = PLP.getListos()
     PCP = CortoPlazo(cpu, cola_espera)
     
-    PMP = MedioPlazo()
+    PMP = MedioPlazo(mmu)
     
     ti_total = PLP.getTiTotal()
     reloj = 0
+    PCP.ejectuar()
     while reloj != ti_total:
+        print('RELOJ = ', reloj)
         if PLP.verificar(reloj):  # Verifica si se puede admitir nuevo proceso
             PLP.admitir()
-            PMP.setSuspendidos(PLP.getAdmitidosEn('D'))
-            PMP.swapping()
+            PMP.setSuspendidos(PLP.getAdmitidosEstado('S'))
+            procesoAdmitido = PMP.swap()
+            if not procesoAdmitido is None:
+                PLP.addListos(procesoAdmitido)
+            
 
-        PCP.ejectuar()  # ordena cola de espera (listos), utiliza dispatcher y asigna proceso a cpu
+          # ordena cola de espera (listos), utiliza dispatcher y asigna proceso a cpu
         PCP.getCpu().ejecutar()    # El cpu ejecutar proceso = ti-1
 
         if PCP.getCpu().getTi() == 0:   # Consulta si el proceso actualmente en cpu terminó la ejecución
+            print('\nLiberando CPU\n')
+            ventana.esperar()
+            proceso = PCP.getCpu().getProceso()
+            mmu.liberarParticion(proceso)
+            proceso.setEst('T')
+            PCP.getCpu().liberar()
             PCP.setEsperando(PLP.getListos())   # Renueva cola de espera por si hubo cambios
-
+            print(f'TERMINÓ EL PROCESO: {proceso}')
+            PCP.ejectuar()
+        
         ventana.monitor()   # Muestra actualizaciones por pantalla
+
+
+
+        ventana.esperar()
         reloj += 1  # Incrementa reloj
 
-        
-
-
-
-    
+ 

@@ -44,7 +44,7 @@ class Proceso(object):
         self.__ubi = ubi
 
     def __str__(self):
-        salida = f'[ID={self.__id}, TA={self.__ta}, TI={self.__ti}, TAM={self.__tam} KB]\n'
+        salida = f'[ID={self.__id}, TA={self.__ta}, TI={self.__ti}, TAM={self.__tam} KB]'
         return salida
 
 
