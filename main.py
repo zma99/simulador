@@ -1,5 +1,13 @@
 
-from clases import *
+from src.consola import Consola
+from src.menu import Menu
+from src.tabla import Tabla
+from src.memoria import MMU
+from src.PLP import LargoPlazo
+from src.PCP import CortoPlazo
+from src.cpu import Cpu
+
+
 
 OPCIONES_MENU ={
     '1':'Cargar procesos manualmente',
@@ -10,41 +18,63 @@ OPCIONES_MENU ={
 
 if __name__ == '__main__':
     ventana = Consola()
-    #ventana.limpiar()
+    ventana.limpiar()
     menu = Menu(OPCIONES_MENU)
     menu.mostrar()
     datos_procesos = menu.capturar()
-    encabezados = datos_procesos.pop(0)
-    tabla_planificacion = Tabla('1', encabezados, datos_procesos)
+    titulo = 'Planificación de procesos:'
+    encabezados = ['ID', 'TA', 'TI', 'TAM']
+    tabla_planificacion = Tabla(titulo, encabezados, datos_procesos)
     ventana.limpiar()
-    print('Planificación de procesos:')
     tabla_planificacion.construir()
 
     # Praparando memoria
     datos_particiones = [100,250,120,60]
-    #print(f'Las particiones se crearán con los siguiente datos: {datos_particiones}\n\n')
-    memo = Memoria(datos_particiones)
-    #print(memo.particiones[0].getId())
-
-    datos_particiones = list()
-
-    for part in memo.getParticiones():
-        particion = list()
-        particion.append(part.getId())
-        particion.append(part.getDirInicio())
-        particion.append(part.getTam())
-        datos_particiones.append(particion)
-
-    encabezados = ['Num', 'Dir inicio', 'Tamaño (KB)']
-    monitor_memo = Tabla('monitor_memo', encabezados, datos_particiones)
-    print('\nDistribución de particiones en MP:')
-    monitor_memo.construir()
-
-
-    print('Cantidad de particiones: ', memo.getCantPart())
-    print(f'Tamaño total de la memoria: {memo.getTam()} KB')
+    mmu = MMU(datos_particiones)
+    mmu.getDistribucion()
 
     ventana.esperar()
     ventana.limpiar()
-    p_largo = LargoPlazo()
-    p_largo.llamar(datos_procesos, memo)
+
+    # Iniciando planificador a largo plazo
+    PLP = LargoPlazo(mmu)
+    PLP.ejecutar(datos_procesos)
+
+    ventana.esperar()
+    ventana.limpiar()
+    print('Acá terminó la ejecución del PLP.')
+    print('\nCola de nuevos: ', PLP.getNuevos())
+    print('\nCola de admitidos: ', PLP.getAdmitidos())
+    print('\nCola de listos: ', PLP.getListos())
+    ventana.esperar()
+
+    # Iniciando planificador a corto plazo
+    ventana.limpiar()
+    cpu = Cpu(1)
+    cola_espera = PLP.getListos()
+    PCP = CortoPlazo(cpu, cola_espera)
+    
+    PMP = MedioPlazo()
+    
+    ti_total = PLP.getTiTotal()
+    reloj = 0
+    while reloj != ti_total:
+        if PLP.verifiar(reloj):  # Verifica si se puede admitir nuevo proceso
+            PLP.admitir()
+            PMP.setSuspendidos(PLP.getAdmitidos('D'))
+            PMP.swapping()
+
+        PCP.ejectuar()  # ordena cola de espera (listos), utiliza dispatcher y asigna proceso a cpu
+        PCP.getCpu().ejecutar()    # El cpu ejecutar proceso = ti-1
+
+        if PCP.getCpu().getTi() == 0:   # Consulta si el proceso actualmente en cpu terminó la ejecución
+            PCP.setEsperando(PLP.getListos())   # Renueva cola de espera por si hubo cambios
+
+        ventana.monitor()   # Muestra actualizaciones por pantalla
+        reloj += 1  # Incrementa reloj
+
+        
+
+
+
+    
