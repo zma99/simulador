@@ -1,2 +1,5 @@
 __pycache__
 *.pyc|
+interfaz.py
+test.py
+ejemplo_monitor_estados.txt

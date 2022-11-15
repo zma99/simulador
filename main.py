@@ -1,5 +1,11 @@
 
-from clases import *
+from src.consola import Consola
+from src.menu import Menu
+from src.tabla import Tabla
+from src.memoria import MMU
+from src.PLP import LargoPlazo
+
+
 
 OPCIONES_MENU ={
     '1':'Cargar procesos manualmente',
