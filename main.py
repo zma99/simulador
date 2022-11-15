@@ -53,4 +53,28 @@ if __name__ == '__main__':
     cpu = Cpu(1)
     cola_espera = PLP.getListos()
     PCP = CortoPlazo(cpu, cola_espera)
-    PCP.ejectuar()
+    
+    PMP = MedioPlazo()
+    
+    ti_total = PLP.getTiTotal()
+    reloj = 0
+    while reloj != ti_total:
+        if PLP.verifiar(reloj):  # Verifica si se puede admitir nuevo proceso
+            PLP.admitir()
+            PMP.setSuspendidos(PLP.getAdmitidos('D'))
+            PMP.swapping()
+
+        PCP.ejectuar()  # ordena cola de espera (listos), utiliza dispatcher y asigna proceso a cpu
+        PCP.getCpu().ejecutar()    # El cpu ejecutar proceso = ti-1
+
+        if PCP.getCpu().getTi() == 0:   # Consulta si el proceso actualmente en cpu terminó la ejecución
+            PCP.setEsperando(PLP.getListos())   # Renueva cola de espera por si hubo cambios
+
+        ventana.monitor()   # Muestra actualizaciones por pantalla
+        reloj += 1  # Incrementa reloj
+
+        
+
+
+
+    
