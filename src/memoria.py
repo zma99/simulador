@@ -105,12 +105,14 @@ class Memoria():
         # Recibe lista de procesos para asignar a particiones libres
         # Utiliza el criterio: "peor partición en la que cabe (el proceso)"
         part = self.partLibreMayor()
-        if part != 0:
+        if part != 0 and proceso.getTam() <= part.getTam() :
             part.setProcAsignado(proceso.getId())
             print('Proceso asignado')
             proceso.setEst('L')
             return True
-        
+        else:
+            print('Proceso Admitido')
+            proceso.setEst('S')
         return False
             
 

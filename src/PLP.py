@@ -118,8 +118,8 @@ class LargoPlazo(object):
             if self.__mmu.memoriaLibre():   # Se consulta si hay memoria disponible
                 # Si hay memoria el mmu se encarga
                 try:
-                    self.__mmu.worstfit(proceso) 
-                    self.__listos.append(proceso)
+                    if self.__mmu.worstfit(proceso): 
+                        self.__listos.append(proceso)
                 except ValueError:
                     print('Algo salió mal en la admisión del proceso')
             else:

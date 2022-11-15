@@ -46,6 +46,7 @@ if __name__ == '__main__':
     print('\nCola de nuevos: ', PLP.getNuevos())
     print('\nCola de admitidos: ', PLP.getAdmitidos())
     print('\nCola de listos: ', PLP.getListos())
+    ventana.esperar()
 
     # Iniciando planificador a corto plazo
     ventana.limpiar()
